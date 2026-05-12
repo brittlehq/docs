@@ -1,0 +1,78 @@
+---
+title: Quickstart
+description: Wire an existing Playwright suite into Brittle in four lines of config.
+---
+
+You already have a Playwright suite. This page gets your test results
+flowing into a Brittle hub in about two minutes.
+
+## Prerequisites
+
+- A Playwright suite (`@playwright/test` already in your project).
+- A Brittle hub. Either:
+  - The hosted demo at [brittle.dev](https://brittle.dev) for a quick
+    look, or
+  - A self-hosted hub (see [Self-host overview](/docs/self-host/overview)).
+- A project token. Mint one in the dashboard under
+  **Project → Settings → Tokens**, type **service**.
+
+## Install the reporter
+
+```bash
+pnpm add -D @brittlehq/playwright-reporter
+```
+
+## Add it to `playwright.config.ts`
+
+```ts ins={6-12}
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './tests',
+
+  reporter: [
+    ['list'],
+    ['@brittlehq/playwright-reporter', {
+      hubUrl: process.env.BRITTLE_HUB_URL,
+      token: process.env.BRITTLE_TOKEN,
+    }],
+  ],
+
+  projects: [
+    { name: 'chromium' },
+    { name: 'firefox' },
+    { name: 'webkit' },
+  ],
+});
+```
+
+The reporter sits next to whatever reporters you already use. It runs in
+parallel with `list` / `html` / anything else.
+
+## Run your tests
+
+```bash
+export BRITTLE_HUB_URL=https://brittle.dev
+export BRITTLE_TOKEN=brt_svc_xxx
+pnpm exec playwright test
+```
+
+The reporter forwards every result, attachment, and Playwright trace to
+your hub. Open the dashboard while the run is in flight and you will see
+sessions roll in.
+
+## What ships with each session
+
+- The test result (pass, fail, skip).
+- Playwright's video, HAR, and trace if you have them enabled in
+  `playwright.config.ts`.
+- `test.info().annotations` (owner, severity, issue links, anything you
+  push) appear on the Session Detail page's Annotations tab.
+- The git commit SHA, branch, and tags from the local checkout, picked
+  up automatically.
+
+## Next steps
+
+- [Reporter configuration](/docs/reporter/configuration) — every option
+  the reporter accepts.
+- [Self-host overview](/docs/self-host/overview) — run your own hub.

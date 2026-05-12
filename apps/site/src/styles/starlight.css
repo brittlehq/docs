@@ -1,0 +1,22 @@
+/**
+ * Brand layer on top of `starlight-theme-rapide`.
+ *
+ * Rapide already handles typography, layout, spacing, the dark theme,
+ * and code block styling. The only thing we need to override is the
+ * accent colour — rapide ships with a green accent and we want amber to
+ * match the marketing site. Everything else stays untouched so the
+ * docs benefit from rapide's polished defaults.
+ */
+
+:root,
+:root[data-theme='light'],
+:root[data-theme='dark'] {
+  /* Brand amber. Single source of truth. */
+  --sl-color-accent: #e8893b;
+  --sl-color-accent-low: color-mix(in oklch, #e8893b 25%, var(--sl-color-bg));
+  --sl-color-accent-high: #f5b67a;
+
+  /* Sidebar active link, ToC current section, link underlines, all the
+     places rapide uses the accent. Mirror them so green→amber sticks. */
+  --sl-color-text-accent: #e8893b;
+}

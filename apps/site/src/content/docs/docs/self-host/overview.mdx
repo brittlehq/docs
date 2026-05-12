@@ -1,0 +1,70 @@
+---
+title: Self-host overview
+description: The moving parts of a Brittle deployment and what each container does.
+---
+
+A Brittle deployment is one Postgres + one (or more) Hub container. That
+is the whole baseline. Everything else — node executors, S3 artifact
+storage, multi-replica Hub — is opt-in.
+
+## The minimum viable stack
+
+```
+┌──────────────┐       ┌──────────────┐
+│   Postgres   │ ◄─────│  Brittle Hub │
+└──────────────┘       │              │
+                       │  · API       │
+                       │  · Dashboard │
+                       │  · /control  │
+                       │  · /tunnel   │
+                       └──────────────┘
+```
+
+- **Postgres**: the only required external dependency. Holds projects,
+  runs, sessions, test cases, artifacts, and the flake-classifier ring
+  buffer.
+- **Hub**: Fastify app that serves the dashboard, the REST API, the
+  Socket.IO control plane, and the WebSocket data plane. The reporter
+  talks to this. The Node executor talks to this. The dashboard talks
+  to this.
+
+Artifacts (videos, traces, screenshots) land on the Hub's local
+filesystem by default. Flip one config flag to push them to S3 instead.
+
+## What you do not need
+
+Brittle was designed for the smallest sensible operational footprint.
+You do not need:
+
+- Redis (unless you are running multi-replica Hub).
+- A separate API + worker process. The Hub is a single binary.
+- A separate auth provider. Local email/password + JWT cookies are
+  built in. SSO/OAuth land on the `AuthProvider` interface when you need
+  them.
+
+## Add a Node executor (optional)
+
+If you want the Hub to launch browsers for you (the "grid" half of the
+product), add one or more **Node executors**. A Node is a container that
+exposes either:
+
+- `host` mode — `playwright-core.launchServer()` directly on the host;
+  fast, no isolation between sessions.
+- `docker` mode — fresh container per session; clean isolation, slower
+  startup.
+
+The Hub schedules incoming `chromium.connect()` requests onto available
+Node slots. Reporter-origin sessions (your local Playwright runs)
+bypass the Node executor entirely.
+
+## Multi-replica Hub (optional)
+
+For high-throughput shops. Requires:
+
+- Redis for the event bus.
+- A shared artifact store (S3).
+- `hubTunnelUrl` set per-pod so node sessions pin to the replica that
+  owns them.
+
+See the Helm chart in [github.com/brittlehq/brittle](https://github.com/brittlehq/brittle)
+for the canonical deployment shape.

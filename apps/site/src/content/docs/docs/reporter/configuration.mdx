@@ -1,0 +1,63 @@
+---
+title: Reporter configuration
+description: Every option @brittlehq/playwright-reporter accepts.
+---
+
+The reporter is configured inline in `playwright.config.ts`. Most setups
+only need `hubUrl` and `token`; the rest are escape hatches for CI shape
+and metadata you want to attach to a run.
+
+## Required
+
+| Option   | Type   | Description                                                 |
+| -------- | ------ | ----------------------------------------------------------- |
+| `hubUrl` | string | URL of your Brittle hub. e.g. `https://brittle.dev`.        |
+| `token`  | string | Project service token. Mint under Settings → Tokens.        |
+
+Both can be passed inline or via env (`BRITTLE_HUB_URL`,
+`BRITTLE_TOKEN`). Env wins, which is what you want from CI.
+
+## Run identity
+
+| Option         | Type    | Default                  | Description                                                                 |
+| -------------- | ------- | ------------------------ | --------------------------------------------------------------------------- |
+| `runName`      | string  | timestamp                | Display name on the Runs page.                                              |
+| `tags`         | array   | `[]`                     | Run-level tags. Comma-separated env: `BRITTLE_RUN_TAGS=nightly,wiki`.       |
+| `runMetadata`  | object  | `{}`                     | Free-form key/value pairs attached to the run. Branch, commit, PR url, etc. |
+| `detectGit`    | boolean | `true`                   | Auto-detect git context from the local repo. Disable for ephemeral CI.      |
+
+```ts
+['@brittlehq/playwright-reporter', {
+  hubUrl: process.env.BRITTLE_HUB_URL,
+  token: process.env.BRITTLE_TOKEN,
+  runName: `Wikipedia nightly · ${new Date().toISOString().slice(0, 10)}`,
+  tags: ['nightly', 'wikipedia'],
+  runMetadata: { branch: process.env.GITHUB_REF_NAME },
+}],
+```
+
+## Diagnostics
+
+| Option              | Type    | Default | Description                                  |
+| ------------------- | ------- | ------- | -------------------------------------------- |
+| `silent`            | boolean | `false` | Suppress reporter warnings on stdout.        |
+| `requestTimeoutMs`  | number  | `30000` | Per-request timeout for hub HTTP calls.      |
+
+## What the reporter does
+
+- Creates a `Session` row per test on `onTestBegin`.
+- POSTs the test result + attachments on `onTestEnd`.
+- Forwards `test.info().annotations` to the Session Detail page.
+- Idempotent: re-running the same `BRITTLE_BUILD_ID` updates the existing
+  run rather than creating a duplicate. Set
+  `BRITTLE_BUILD_ID=${{ github.run_id }}` in CI for clean run-vs-rerun
+  ergonomics.
+
+## Reporter-origin sessions vs grid sessions
+
+The reporter ships test results from a Playwright suite running on your
+own machine or CI runner — Brittle does not launch the browser. The
+dashboard tags these sessions as `reported`. The grid runtime (where the
+hub launches the browser via the Node executor) ships sessions tagged
+`managed`. The dashboard renders both identically; the tag is a
+debugging hint, not a feature gate.
