@@ -43,9 +43,13 @@ export default defineConfig({
         replacesTitle: false,
       },
       customCss: ['./src/styles/starlight.css'],
-      social: {
-        github: 'https://github.com/brittlehq/brittle',
-      },
+      social: [
+        {
+          icon: 'github',
+          label: 'GitHub',
+          href: 'https://github.com/brittlehq/brittle',
+        },
+      ],
       sidebar: [
         {
           label: 'Get started',
