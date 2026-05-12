@@ -17,8 +17,13 @@ import TestGrid from './TestGrid.astro';
 <section class="relative isolate overflow-hidden">
   {/* Backdrop layers ------------------------------------------------------ */}
   <div class="dot-grid absolute inset-0 -z-10" aria-hidden="true"></div>
+  {/* Fixed offset from the top instead of a percentage. Percentages
+      scale with section height, which doubles on mobile when the hero
+      content stacks, and the crack ended up cutting through the kicker
+      text. A pixel offset keeps it in the breathing space above the
+      copy regardless of viewport. */}
   <div
-    class="brand-crack absolute inset-x-0 top-[18%] -z-10"
+    class="brand-crack absolute inset-x-0 top-12 -z-10"
     aria-hidden="true"
   ></div>
   <div
