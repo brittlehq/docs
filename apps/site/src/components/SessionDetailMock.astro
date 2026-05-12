@@ -1,0 +1,80 @@
+---
+/**
+ * Stylised slice of the Session Detail page: one failed session with the
+ * video / trace / screenshot artifact strip, a couple of timeline events,
+ * and the failure reason. Used in the bento "grid runtime" card to show
+ * what comes back from every test run.
+ */
+---
+
+<div class="p-5">
+  <div class="mb-3 flex items-center gap-2">
+    {/* Browser glyph + test name */}
+    <span class="block h-6 w-6 shrink-0 rounded-full bg-gradient-to-br from-[#4285F4] via-[#FBBC04] to-[#EA4335] opacity-90"></span>
+    <div class="min-w-0 flex-1">
+      <p class="truncate text-sm font-medium text-[color:var(--color-fg)]">
+        search results echoes query
+      </p>
+      <p class="font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
+        chromium-130 · tests/search/search.spec.ts:36
+      </p>
+    </div>
+    <span class="inline-flex items-center rounded border border-[color:var(--color-danger)]/40 bg-[color:var(--color-danger)]/15 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[color:var(--color-danger)]">
+      Failed
+    </span>
+  </div>
+
+  <div class="brand-crack-soft my-3" aria-hidden="true"></div>
+
+  {/* Artifact strip */}
+  <div class="mb-3 grid grid-cols-3 gap-2">
+    {[
+      { label: 'Video', icon: 'film' },
+      { label: 'Trace', icon: 'archive' },
+      { label: 'Screenshot', icon: 'image' },
+    ].map((a) => (
+      <div class="rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-2.5 py-2">
+        <p class="font-mono text-[9px] uppercase tracking-wider text-[color:var(--color-fg-subtle)]">
+          {a.label}
+        </p>
+        <p class="mt-1 text-[10px] text-[color:var(--color-fg-muted)]">
+          ready
+        </p>
+      </div>
+    ))}
+  </div>
+
+  {/* Mini timeline */}
+  <p class="mb-2 font-mono text-[9px] uppercase tracking-wider text-[color:var(--color-fg-subtle)]">
+    Timeline
+  </p>
+  <ul class="flex flex-col gap-1.5">
+    {[
+      { t: '00:00.0', label: 'page.goto · /search', tone: 'fg-muted' },
+      { t: '00:01.2', label: 'expect.toHaveText · "results"', tone: 'fg-muted' },
+      { t: '00:03.4', label: 'TimeoutError · locator not visible', tone: 'danger' },
+    ].map((e) => (
+      <li class="flex items-baseline gap-2 text-[11px]">
+        <span class="font-mono text-[color:var(--color-fg-subtle)]">{e.t}</span>
+        <span
+          class:list={[
+            'block h-1 w-1 rounded-full',
+            e.tone === 'danger'
+              ? 'bg-[color:var(--color-danger)]'
+              : 'bg-[color:var(--color-fg-subtle)]/50',
+          ]}
+        ></span>
+        <span
+          class:list={[
+            'min-w-0 flex-1 truncate',
+            e.tone === 'danger'
+              ? 'text-[color:var(--color-danger)]'
+              : 'text-[color:var(--color-fg-muted)]',
+          ]}
+        >
+          {e.label}
+        </span>
+      </li>
+    ))}
+  </ul>
+</div>

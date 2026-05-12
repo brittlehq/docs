@@ -1,0 +1,64 @@
+---
+/**
+ * Base shell every page renders through. Owns:
+ *   - <head> meta (title, description, OG, favicon)
+ *   - Font loading (Space Grotesk + Inter + JetBrains Mono from Google)
+ *   - Global stylesheet
+ *
+ * Pages compose by slotting <main> content. Nav + footer live in their own
+ * components so the layout itself stays a thin scaffold.
+ */
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Path to the page-level OG image relative to `/`. Defaults to /og.png. */
+  ogImage?: string;
+}
+
+const {
+  title = 'Brittle · Flaky test triage for Playwright',
+  description = 'Self-hosted Playwright grid with flake analytics. Per-env rollups, strong-flake detection on same-commit pass/fail, and your data on your infra.',
+  ogImage = '/og.png',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL.toString()} />
+
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL.toString()} />
+    <meta property="og:image" content={new URL(ogImage, Astro.site).toString()} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    {/* Fonts. Preconnect + display=swap so the page doesn't flash empty text
+        while Space Grotesk loads. Only the weights actually used to keep the
+        download tight. */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="min-h-dvh font-sans antialiased">
+    <slot />
+  </body>
+</html>

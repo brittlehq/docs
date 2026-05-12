@@ -1,0 +1,103 @@
+---
+/**
+ * Stylised version of the Session Detail page's Test Results tab.
+ * Dominant element is the video player (16:9 with a play overlay and a
+ * scrubber strip), followed by a short test-step tree showing what
+ * Playwright recorded. Sells the "every session is replayable" story
+ * visually — operators look at a session and instantly see they can
+ * watch what the browser did.
+ */
+const steps = [
+  { kind: 'pass', label: 'page.goto · /wiki/Albert_Einstein', t: '0.8s' },
+  { kind: 'pass', label: 'expect.toBeVisible · h1', t: '0.3s' },
+  { kind: 'fail', label: 'expect.toHaveText · "Einstein"', t: '2.0s' },
+];
+---
+
+<div class="p-4">
+  {/* Header strip: test name + status pill + duration */}
+  <div class="mb-3 flex items-center gap-2">
+    <p class="min-w-0 flex-1 truncate text-sm font-medium text-[color:var(--color-fg)]">
+      search results echoes query
+    </p>
+    <span class="inline-flex items-center rounded border border-[color:var(--color-danger)]/40 bg-[color:var(--color-danger)]/15 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-[color:var(--color-danger)]">
+      Failed
+    </span>
+    <span class="font-mono text-[10px] text-[color:var(--color-fg-subtle)]">3.1s</span>
+  </div>
+
+  {/* Video frame — 16:9 with a centered play button + scrubber */}
+  <div class="relative overflow-hidden rounded-lg border border-[color:var(--color-border)] bg-black">
+    <div
+      class="aspect-video w-full"
+      style="background:
+        radial-gradient(ellipse 60% 50% at 35% 35%, rgba(232,137,59,0.18), transparent 70%),
+        radial-gradient(ellipse 50% 60% at 70% 70%, rgba(66,133,244,0.12), transparent 70%),
+        linear-gradient(135deg, #16161b, #0a0a0c);"
+    >
+      {/* Faint browser chrome silhouette to imply "this is a recorded page" */}
+      <div class="absolute inset-x-0 top-0 flex h-6 items-center gap-1 border-b border-white/5 px-3">
+        <span class="block h-1.5 w-1.5 rounded-full bg-white/15"></span>
+        <span class="block h-1.5 w-1.5 rounded-full bg-white/15"></span>
+        <span class="block h-1.5 w-1.5 rounded-full bg-white/15"></span>
+        <span class="ml-3 h-2 w-40 rounded-sm bg-white/10"></span>
+      </div>
+
+      {/* A few ghost-content bars suggesting a rendered web page underneath */}
+      <div class="absolute inset-x-6 top-12 flex flex-col gap-2">
+        <span class="h-2 w-32 rounded-sm bg-white/15"></span>
+        <span class="h-1.5 w-56 rounded-sm bg-white/10"></span>
+        <span class="h-1.5 w-44 rounded-sm bg-white/10"></span>
+      </div>
+    </div>
+
+    {/* Centered play button */}
+    <button
+      type="button"
+      aria-label="Play recording"
+      class="absolute inset-0 flex items-center justify-center"
+    >
+      <span class="flex h-11 w-11 items-center justify-center rounded-full bg-[color:var(--color-accent)] shadow-[0_0_24px_color-mix(in_oklch,var(--color-accent)_60%,transparent)]">
+        <svg class="h-4 w-4 translate-x-0.5 text-[color:var(--color-bg)]" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
+          <path d="M4 2v12l10-6z" />
+        </svg>
+      </span>
+    </button>
+
+    {/* Scrubber strip at the bottom */}
+    <div class="absolute inset-x-0 bottom-0 flex items-center gap-2 border-t border-white/5 bg-black/40 px-3 py-1.5 backdrop-blur-sm">
+      <span class="font-mono text-[9px] text-white/60">00:01.4</span>
+      <div class="relative h-0.5 flex-1 overflow-hidden rounded-full bg-white/15">
+        <div class="absolute inset-y-0 left-0 w-2/5 bg-[color:var(--color-accent)]"></div>
+        {/* failure marker on the timeline */}
+        <span class="absolute top-1/2 h-1.5 w-0.5 -translate-y-1/2 bg-[color:var(--color-danger)]" style="left: 75%;"></span>
+      </div>
+      <span class="font-mono text-[9px] text-white/40">03:08</span>
+    </div>
+  </div>
+
+  {/* Test-step tree below the video */}
+  <ul class="mt-3 flex flex-col gap-1">
+    {steps.map((s) => (
+      <li class="flex items-center gap-2 rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-2.5 py-1.5">
+        {s.kind === 'pass' ? (
+          <span class="text-[color:var(--color-success)]">
+            <svg class="h-3 w-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden>
+              <path d="M3 8.5l3 3 7-7" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        ) : (
+          <span class="text-[color:var(--color-danger)]">
+            <svg class="h-3 w-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden>
+              <path d="M4 4l8 8M12 4l-8 8" stroke-linecap="round" />
+            </svg>
+          </span>
+        )}
+        <span class="min-w-0 flex-1 truncate font-mono text-[10px] text-[color:var(--color-fg-muted)]">
+          {s.label}
+        </span>
+        <span class="font-mono text-[9px] text-[color:var(--color-fg-subtle)]">{s.t}</span>
+      </li>
+    ))}
+  </ul>
+</div>

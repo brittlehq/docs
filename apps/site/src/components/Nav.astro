@@ -1,0 +1,56 @@
+---
+import Logo from './Logo.astro';
+
+/**
+ * Top navigation. Sticky on scroll with a soft blur backdrop so the hero
+ * content remains readable underneath. Three link slots + one CTA. Keeps
+ * the bar uncluttered.
+ */
+const links = [
+  { href: '/#how', label: 'How it works' },
+  { href: '/#features', label: 'Features' },
+  { href: '/docs', label: 'Docs' },
+];
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-[color:var(--color-border-soft)]/40 bg-[color:var(--color-bg)]/70 backdrop-blur-md"
+>
+  <div class="container-fixed flex h-14 items-center justify-between gap-6">
+    <a href="/" class="block h-7 text-[color:var(--color-fg)]" aria-label="Brittle home">
+      <Logo variant="lockup" class="h-full" />
+    </a>
+
+    <nav class="hidden items-center gap-7 text-sm text-[color:var(--color-fg-muted)] md:flex">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          class="transition-colors hover:text-[color:var(--color-fg)]"
+        >
+          {l.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a
+        href="https://github.com/brittlehq/brittle"
+        target="_blank"
+        rel="noreferrer"
+        class="hidden text-sm text-[color:var(--color-fg-muted)] transition-colors hover:text-[color:var(--color-fg)] sm:inline"
+        aria-label="Brittle on GitHub"
+      >
+        GitHub
+      </a>
+      <a
+        href="https://brittle.dev"
+        class="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--color-accent)] px-3 py-1.5 text-sm font-medium text-[color:var(--color-bg)] transition-opacity hover:opacity-90"
+      >
+        Try the demo
+        <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" aria-hidden>
+          <path d="M5 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>

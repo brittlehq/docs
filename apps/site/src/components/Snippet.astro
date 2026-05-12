@@ -1,0 +1,71 @@
+---
+/**
+ * Code-block hero. The exact `playwright.config.ts` you'd write to ship to
+ * Brittle, with the reporter lines highlighted. Two columns:
+ *   - left: framing ("this is all it takes")
+ *   - right: the actual snippet
+ *
+ * Snippet is hand-tokenised (no Shiki at build time). Keeps the bundle
+ * empty and the markup directly editable. Highlighting is just three
+ * `<span>` colour classes.
+ */
+---
+
+<section class="relative py-24 md:py-32">
+  {/* Section accent rule */}
+  <div class="brand-crack mx-auto mb-20 max-w-3xl" aria-hidden="true"></div>
+
+  <div class="container-fixed grid items-center gap-12 md:grid-cols-2">
+    <div>
+      <p class="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--color-fg-subtle)]">
+        Integration
+      </p>
+      <h2
+        class="mt-3 text-balance text-4xl tracking-tight text-[color:var(--color-fg)] sm:text-5xl"
+        style="font-family: var(--font-brand); font-weight: 700;"
+      >
+        Four lines.<br />The rest is your test code.
+      </h2>
+      <p class="mt-6 max-w-md text-[color:var(--color-fg-muted)] leading-relaxed">
+        Sits alongside your existing reporters. Forwards results, traces, and screenshots.
+      </p>
+    </div>
+
+    <div
+      class="overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elev)] shadow-xl"
+    >
+      {/* Window chrome */}
+      <div class="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-2.5">
+        <div class="flex gap-1.5">
+          <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+          <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+          <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+        </div>
+        <span class="font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
+          playwright.config.ts
+        </span>
+      </div>
+
+      <pre class="overflow-x-auto p-5 font-mono text-[12.5px] leading-relaxed text-[color:var(--color-fg-muted)]"><code><span class="text-[color:var(--color-fg-subtle)]">import</span> {'{ defineConfig }'} <span class="text-[color:var(--color-fg-subtle)]">from</span> <span class="text-[color:var(--color-accent-soft)]">'@playwright/test'</span>;
+
+<span class="text-[color:var(--color-fg-subtle)]">export default</span> <span class="text-[color:var(--color-fg)]">defineConfig</span>({'{'}
+  <span class="text-[color:var(--color-fg)]">testDir</span>: <span class="text-[color:var(--color-accent-soft)]">'./tests'</span>,
+
+  <span class="text-[color:var(--color-fg-subtle)]">// drop in the brittle reporter</span>
+  <span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">reporter: [</span>
+<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">    [</span><span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-soft)]">'@brittlehq/playwright-reporter'</span><span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">, {'{'}</span>
+<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">      hubUrl: process.env.BRITTLE_HUB_URL,</span>
+<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">      token: process.env.BRITTLE_TOKEN,</span>
+<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">    {'}'}],</span>
+<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">  ],</span>
+
+  <span class="text-[color:var(--color-fg)]">projects</span>: [
+    {'{'} <span class="text-[color:var(--color-fg)]">name</span>: <span class="text-[color:var(--color-accent-soft)]">'chromium'</span> {'}'},
+    {'{'} <span class="text-[color:var(--color-fg)]">name</span>: <span class="text-[color:var(--color-accent-soft)]">'firefox'</span>  {'}'},
+    {'{'} <span class="text-[color:var(--color-fg)]">name</span>: <span class="text-[color:var(--color-accent-soft)]">'webkit'</span>   {'}'},
+  ],
+{'}'});
+</code></pre>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,91 @@
+---
+/**
+ * Decorative test-grid mock for the hero. Renders a 7×5 grid:
+ *   - rows = tests (`search submits…`, `article infobox…`, etc.)
+ *   - columns = envs (chromium, firefox, webkit, …)
+ *   - cells = result tone (pass / fail / flaky / skip)
+ *
+ * Suggests "per-env aggregation". The product's central feature. Without
+ * showing an actual screenshot. Status pattern is hand-picked so the eye
+ * lands on:
+ *   - a single all-red column ("webkit-only failure") and
+ *   - a row with mixed pass/fail across envs ("this test is flaky"),
+ * the two narratives the dashboard answers.
+ */
+
+// 0 = pass, 1 = fail, 2 = flaky, 3 = skip, 4 = empty
+const grid: number[][] = [
+  [0, 0, 1, 0, 0, 0, 0],
+  [0, 2, 1, 0, 0, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0],
+  [1, 1, 1, 1, 0, 0, 0],
+  [0, 0, 1, 0, 0, 0, 0],
+];
+
+const labels = ['search', 'article', 'history', 'i18n', 'visual'];
+const envs = ['chromium', 'firefox', 'webkit', 'edge', 'safari-mac', 'safari-ios', 'android'];
+---
+
+<div
+  class="relative rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)]/80 p-5 shadow-2xl backdrop-blur-sm"
+>
+  {/* Floating crack accent at the top, mirrors the hero */}
+  <div class="brand-crack absolute inset-x-6 top-3" aria-hidden="true"></div>
+
+  <div class="mb-4 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-[color:var(--color-fg-subtle)]">
+    <span>Per-env matrix</span>
+    <span class="font-mono">main · 7 envs</span>
+  </div>
+
+  <div class="overflow-hidden">
+    {/* Header row: env names */}
+    <div class="ml-20 grid grid-cols-7 gap-1.5">
+      {envs.map((e) => (
+        <div class="truncate text-center font-mono text-[9px] text-[color:var(--color-fg-subtle)]">
+          {e}
+        </div>
+      ))}
+    </div>
+
+    {/* Body: label + cells */}
+    <div class="mt-2 flex flex-col gap-1.5">
+      {grid.map((row, i) => (
+        <div class="flex items-center gap-3">
+          <div class="w-20 truncate text-right font-mono text-[10px] text-[color:var(--color-fg-muted)]">
+            {labels[i]}
+          </div>
+          <div class="grid flex-1 grid-cols-7 gap-1.5">
+            {row.map((cell) => (
+              <div
+                class:list={[
+                  'aspect-square rounded-sm border',
+                  cell === 0 && 'border-[color:var(--color-border)]/70 bg-[color:var(--color-surface-2)]',
+                  cell === 1 && 'border-[color:var(--color-danger)]/40 bg-[color:var(--color-danger)]/20',
+                  cell === 2 && 'border-[color:var(--color-accent)]/50 bg-[color:var(--color-accent)]/25',
+                  cell === 3 && 'border-[color:var(--color-border)]/50 bg-transparent',
+                  cell === 4 && 'border-transparent',
+                ]}
+              ></div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Footer legend */}
+  <div class="mt-5 flex items-center gap-4 text-[10px] text-[color:var(--color-fg-subtle)]">
+    <span class="inline-flex items-center gap-1.5">
+      <span class="block h-2 w-2 rounded-sm border border-[color:var(--color-border)] bg-[color:var(--color-surface-2)]"></span>
+      pass
+    </span>
+    <span class="inline-flex items-center gap-1.5">
+      <span class="block h-2 w-2 rounded-sm border border-[color:var(--color-danger)]/40 bg-[color:var(--color-danger)]/20"></span>
+      fail
+    </span>
+    <span class="inline-flex items-center gap-1.5">
+      <span class="block h-2 w-2 rounded-sm border border-[color:var(--color-accent)]/50 bg-[color:var(--color-accent)]/25"></span>
+      flaky
+    </span>
+  </div>
+</div>

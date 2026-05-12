@@ -1,0 +1,122 @@
+---
+import MockWindow from './MockWindow.astro';
+import FailureAnalysisMock from './FailureAnalysisMock.astro';
+import TestDetailMock from './TestDetailMock.astro';
+import SessionDetailMock from './SessionDetailMock.astro';
+import TestResultsMock from './TestResultsMock.astro';
+
+/**
+ * Alternating feature rows. Each row is a single feature:
+ *   - a fully-visible mock window on one side
+ *   - kicker + headline + one-sentence body on the other
+ *
+ * Rows flip the mock between left and right so the eye rocks back and
+ * forth as it scrolls. No card chrome, no tilts, no bleed — the mock is
+ * the focal point and stays uncropped.
+ */
+const rows = [
+  {
+    kicker: 'per-env aggregation',
+    title: 'See the failing browser, not just the test.',
+    body: 'TestCase rows are keyed per env, so a WebKit-only failure gets its own row.',
+    mockUrl: 'brittle.dev/p/web/runs/rh-9j2',
+    mockKey: 'failure',
+    mockOn: 'left',
+  },
+  {
+    kicker: 'grid runtime',
+    title: 'Every session, replayable.',
+    body: 'Video, HAR, and trace come back with every session.',
+    mockUrl: 'brittle.dev/p/web/sessions/9j2-rh',
+    mockKey: 'session',
+    mockOn: 'right',
+  },
+  {
+    kicker: 'test replay',
+    title: 'Watch the failure happen.',
+    body: 'Scrub the recording, jump to the failing step, open the trace.',
+    mockUrl: 'brittle.dev/p/web/sessions/9j2-rh/test-results',
+    mockKey: 'video',
+    mockOn: 'left',
+  },
+  {
+    kicker: 'per-env signals',
+    title: 'One test, every browser, every classification.',
+    body: 'Small multiples per env. Stable on chromium and flaky on webkit reads as exactly that.',
+    mockUrl: 'brittle.dev/p/web/tests/wiki-search',
+    mockKey: 'matrix',
+    mockOn: 'right',
+  },
+];
+---
+
+<section id="features" class="relative py-24 md:py-32">
+  <div class="container-fixed">
+    <div class="mb-20 max-w-2xl">
+      <p class="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--color-fg-subtle)]">
+        What's different
+      </p>
+      <h2
+        class="mt-3 text-balance text-4xl tracking-tight text-[color:var(--color-fg)] sm:text-5xl"
+        style="font-family: var(--font-brand); font-weight: 700;"
+      >
+        Triage that matches how flaky tests actually fail.
+      </h2>
+    </div>
+
+    <div class="flex flex-col gap-24 md:gap-32">
+      {rows.map((row, i) => (
+        <div
+          class:list={[
+            'grid items-center gap-10 md:grid-cols-2 md:gap-16',
+          ]}
+        >
+          {/* Mock pane */}
+          <div
+            class:list={[
+              row.mockOn === 'left' ? 'md:order-1' : 'md:order-2',
+            ]}
+          >
+            <MockWindow url={row.mockUrl}>
+              {row.mockKey === 'failure' && <FailureAnalysisMock />}
+              {row.mockKey === 'session' && <SessionDetailMock />}
+              {row.mockKey === 'video' && <TestResultsMock />}
+              {row.mockKey === 'matrix' && <TestDetailMock />}
+            </MockWindow>
+          </div>
+
+          {/* Text pane */}
+          <div
+            class:list={[
+              'max-w-md',
+              row.mockOn === 'left' ? 'md:order-2 md:ml-4' : 'md:order-1 md:mr-4 md:ml-auto',
+            ]}
+          >
+            <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-accent-soft)]">
+              {row.kicker}
+            </p>
+            <h3
+              class="mt-3 text-balance text-3xl leading-tight tracking-tight text-[color:var(--color-fg)] sm:text-4xl"
+              style="font-family: var(--font-brand); font-weight: 700;"
+            >
+              {row.title}
+            </h3>
+            <p class="mt-4 text-[color:var(--color-fg-muted)] leading-relaxed">
+              {row.body}
+            </p>
+            {/* Brand-crack accent under the body, anchored from the side
+                opposite the mock so the eye flows from copy back to
+                visual on each row. */}
+            <div
+              class:list={[
+                'brand-crack-soft mt-6 w-24',
+                row.mockOn === 'left' ? '' : 'ml-auto',
+              ]}
+              aria-hidden="true"
+            ></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

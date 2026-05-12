@@ -1,0 +1,79 @@
+---
+/**
+ * Stylised slice of the Test Detail page: one logical test with three
+ * per-env small-multiples. Each env card carries a sparkline of recent
+ * pass/fail dots and a classification chip. The webkit card is flaky to
+ * give the eye the same "per-env signal" story the live product tells.
+ */
+const envs = [
+  {
+    name: 'chromium-x/desktop',
+    classification: 'STABLE',
+    classTone: 'success',
+    spark: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  },
+  {
+    name: 'webkit-x/desktop',
+    classification: 'FLAKY',
+    classTone: 'accent',
+    spark: [1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+  },
+  {
+    name: 'firefox-x/desktop',
+    classification: 'STABLE',
+    classTone: 'success',
+    spark: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  },
+];
+
+const chipTone: Record<string, string> = {
+  success:
+    'border-[color:var(--color-success)]/40 bg-[color:var(--color-success)]/15 text-[color:var(--color-success)]',
+  accent:
+    'border-[color:var(--color-accent)]/50 bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent)]',
+};
+---
+
+<div class="p-5">
+  <div class="mb-1 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-[color:var(--color-fg-subtle)]">
+    <span>article infobox renders metadata</span>
+    <span class="font-mono normal-case tracking-normal text-[color:var(--color-fg-muted)]">
+      3 envs · main
+    </span>
+  </div>
+
+  <div class="brand-crack-soft my-4" aria-hidden="true"></div>
+
+  <div class="grid grid-cols-3 gap-3">
+    {envs.map((e) => (
+      <div class="rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-3">
+        <p class="mb-2 truncate font-mono text-[9px] text-[color:var(--color-fg-subtle)]">
+          {e.name}
+        </p>
+
+        {/* Sparkline: pass/fail dots in a row */}
+        <div class="mb-3 flex items-end gap-0.5">
+          {e.spark.map((v) => (
+            <span
+              class:list={[
+                'h-3 w-1 rounded-sm',
+                v === 1
+                  ? 'bg-[color:var(--color-success)]/80'
+                  : 'bg-[color:var(--color-danger)]',
+              ]}
+            ></span>
+          ))}
+        </div>
+
+        <span
+          class:list={[
+            'inline-flex items-center rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider',
+            chipTone[e.classTone],
+          ]}
+        >
+          {e.classification}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>

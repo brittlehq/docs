@@ -1,0 +1,49 @@
+---
+/**
+ * Stylised dashboard window used in the feature bento cards. Renders the
+ * standard browser-chrome three-dots + URL slot + a content slot below.
+ * The optional `tilt` prop applies a perspective transform so a row of
+ * these reads with subtle 3D depth.
+ *
+ * tilt values:
+ *   none   no transform (use when the card is the only visual element)
+ *   right  rotates the right edge towards the viewer (peeks in from the right)
+ *   left   rotates the left edge towards the viewer (peeks in from the left)
+ */
+interface Props {
+  url: string;
+  tilt?: 'none' | 'right' | 'left';
+  class?: string;
+}
+
+const { url, tilt = 'none', class: className } = Astro.props;
+
+const tiltStyle =
+  tilt === 'right'
+    ? 'perspective(1400px) rotateY(-9deg) rotateX(2deg)'
+    : tilt === 'left'
+      ? 'perspective(1400px) rotateY(9deg) rotateX(2deg)'
+      : 'none';
+---
+
+<div
+  class:list={[
+    'overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elev)] shadow-2xl',
+    className,
+  ]}
+  style={`transform: ${tiltStyle}; transform-origin: center;`}
+>
+  {/* Window chrome */}
+  <div class="flex items-center gap-3 border-b border-[color:var(--color-border)] px-4 py-2.5">
+    <div class="flex gap-1.5">
+      <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+      <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+      <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+    </div>
+    <span class="flex-1 truncate font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
+      {url}
+    </span>
+  </div>
+
+  <slot />
+</div>

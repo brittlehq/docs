@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+/* -------------------------------------------------------------------------- */
+/* Brand tokens                                                                */
+/* -------------------------------------------------------------------------- */
+
+@theme {
+  /* Type: Space Grotesk for headings, Inter for body, JetBrains for code. */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-brand: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Brand amber. Same value the dashboard uses, so screenshots of the app
+     drop into the marketing page without a colour mismatch. */
+  --color-accent: #e8893b;
+  --color-accent-soft: #f5b67a;
+  --color-accent-deep: #b56624;
+
+  /* Surfaces, dark-first. */
+  --color-bg: #0a0a0c;
+  --color-bg-elev: #111114;
+  --color-surface: #16161b;
+  --color-surface-2: #1c1c22;
+  --color-border: #2a2a32;
+  --color-border-soft: #1f1f26;
+
+  /* Foreground */
+  --color-fg: #f4f4f5;
+  --color-fg-muted: #b4b4bb;
+  --color-fg-subtle: #6e6e78;
+
+  /* Status (used sparingly for pass/fail dot decorations). */
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  --color-warning: #fbbf24;
+}
+
+/* Body defaults. Dark by default; a future `.light` class can override.  */
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #0a0a0c;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Reusable geometric motifs                                                   */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Dot grid. The recurring "many tests / many envs" texture. Paint with a
+ * radial gradient mask so the dots fade out at the edges instead of marching
+ * to the viewport corners.
+ */
+.dot-grid {
+  background-image: radial-gradient(circle, color-mix(in oklch, var(--color-fg) 28%, transparent) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  background-position: 0 0;
+  mask-image: radial-gradient(ellipse 65% 65% at 50% 45%, black 30%, transparent 92%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 65% at 50% 45%, black 30%, transparent 92%);
+}
+
+.dot-grid-tight {
+  background-image: radial-gradient(circle, color-mix(in oklch, var(--color-fg) 30%, transparent) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/**
+ * Brand crack. Single-pixel amber gradient bar used as a section accent.
+ * Mirrors the dashboard's auth backdrop so the two surfaces match.
+ * Two intensities:
+ *   .brand-crack       Section seam (visible across the column)
+ *   .brand-crack-soft  Quiet inline accent (e.g. inside cards)
+ */
+.brand-crack {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklch, var(--color-accent) 95%, transparent) 50%,
+    transparent
+  );
+  box-shadow: 0 0 12px color-mix(in oklch, var(--color-accent) 50%, transparent);
+}
+
+.brand-crack-soft {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    color-mix(in oklch, var(--color-accent) 60%, transparent) 50%,
+    transparent
+  );
+}
+
+/**
+ * Subtle inner glow used on hero text blocks. Adds depth without resorting to
+ * heavy gradients or imagery.
+ */
+.glow-amber {
+  text-shadow: 0 0 40px color-mix(in oklch, var(--color-accent) 30%, transparent);
+}
+
+/* Container: max-width clamp used on every section so the vertical rhythm
+ * stays consistent. */
+.container-fixed {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container-fixed {
+    padding-inline: 2.5rem;
+  }
+}

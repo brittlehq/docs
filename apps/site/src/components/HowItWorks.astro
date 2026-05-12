@@ -1,0 +1,144 @@
+---
+/**
+ * Three-step integration overview. Bare numbers, monospace labels. Feels
+ * like a runbook, not a salesy "platform pillars" section. Right column
+ * carries a minimal hub-node diagram drawn as inline SVG (nodes + lines,
+ * no icons, no labels other than three small captions).
+ */
+---
+
+<section id="how" class="relative py-24 md:py-32">
+  <div class="container-fixed">
+    <div class="mb-14 max-w-2xl">
+      <p class="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--color-fg-subtle)]">
+        How it works
+      </p>
+      <h2
+        class="mt-3 text-balance text-4xl tracking-tight text-[color:var(--color-fg)] sm:text-5xl"
+        style="font-family: var(--font-brand); font-weight: 700;"
+      >
+        One reporter. One Postgres. Your tests stay yours.
+      </h2>
+    </div>
+
+    <div class="grid items-start gap-12 md:grid-cols-2 md:gap-20">
+      {/* Steps */}
+      <ol class="flex flex-col gap-10">
+        {[
+          {
+            n: '01',
+            title: 'Drop in the reporter',
+            body: 'Add `@brittlehq/playwright-reporter` to your config. Run tests like you do today.',
+          },
+          {
+            n: '02',
+            title: 'Run tests anywhere',
+            body: 'CI, laptop, container. Anywhere Playwright runs. No agent, no daemon.',
+          },
+          {
+            n: '03',
+            title: 'Triage from the dashboard',
+            body: 'Open the run, click the failing env. Flakes and regressions are tagged inline.',
+          },
+        ].map((step) => (
+          <li class="flex gap-5">
+            <span
+              class="font-mono text-sm text-[color:var(--color-accent)]"
+              style="font-feature-settings: 'tnum';"
+            >
+              {step.n}
+            </span>
+            <div class="flex-1">
+              <h3
+                class="text-xl text-[color:var(--color-fg)]"
+                style="font-family: var(--font-brand); font-weight: 600;"
+              >
+                {step.title}
+              </h3>
+              <p class="mt-2 text-[color:var(--color-fg-muted)] leading-relaxed">
+                {step.body}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      {/*
+        Terminal preview of `pnpm test` with the reporter loaded. Replaces
+        an earlier hub-and-spokes diagram, which was decorative without
+        teaching anything. Shows the actual output: pass/fail rows, the
+        reporter's upload line, a sample brittle.dev link. Mirrors the
+        three steps on the left in the language operators read every day.
+      */}
+      <div
+        class="overflow-hidden rounded-xl border border-[color:var(--color-border)] bg-[color:var(--color-bg-elev)] shadow-xl"
+      >
+        {/* Window chrome */}
+        <div class="flex items-center justify-between border-b border-[color:var(--color-border)] px-4 py-2.5">
+          <div class="flex gap-1.5">
+            <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+            <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+            <span class="block h-2.5 w-2.5 rounded-full bg-[color:var(--color-fg-subtle)]/30"></span>
+          </div>
+          <span class="font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
+            ~/app · pnpm test
+          </span>
+        </div>
+
+        <div class="px-5 py-5 font-mono text-[12.5px] leading-[1.7]">
+          <p class="text-[color:var(--color-fg-subtle)]">
+            <span class="text-[color:var(--color-accent-soft)]">$</span> pnpm test
+          </p>
+
+          <p class="mt-3 text-[color:var(--color-fg-muted)]">
+            Running 24 tests using 3 workers
+          </p>
+
+          <ul class="mt-2 space-y-0.5 text-[color:var(--color-fg-muted)]">
+            <li>
+              <span class="text-[color:var(--color-success)]">✓</span>
+              <span class="ml-2">search box accepts query input</span>
+              <span class="ml-2 text-[color:var(--color-fg-subtle)]">(1.2s)</span>
+            </li>
+            <li>
+              <span class="text-[color:var(--color-success)]">✓</span>
+              <span class="ml-2">article infobox renders metadata</span>
+              <span class="ml-2 text-[color:var(--color-fg-subtle)]">(0.9s)</span>
+            </li>
+            <li>
+              <span class="text-[color:var(--color-danger)]">✗</span>
+              <span class="ml-2 text-[color:var(--color-fg)]">search results echo query [webkit]</span>
+              <span class="ml-2 text-[color:var(--color-fg-subtle)]">(3.1s)</span>
+            </li>
+            <li>
+              <span class="text-[color:var(--color-success)]">✓</span>
+              <span class="ml-2">history page renders revisions</span>
+              <span class="ml-2 text-[color:var(--color-fg-subtle)]">(1.4s)</span>
+            </li>
+          </ul>
+
+          <div class="brand-crack-soft mt-5 mb-4" aria-hidden="true"></div>
+
+          <p class="text-[color:var(--color-accent-soft)]">
+            [@brittlehq/playwright-reporter]
+          </p>
+          <p class="text-[color:var(--color-fg-muted)]">
+            <span class="ml-2 text-[color:var(--color-fg)]">→</span>
+            <span class="ml-2">uploaded 24 sessions · 1 failed</span>
+          </p>
+          <p class="text-[color:var(--color-fg-muted)]">
+            <span class="ml-2 text-[color:var(--color-fg)]">→</span>
+            <span class="ml-2 text-[color:var(--color-accent)] underline decoration-dotted underline-offset-4">
+              brittle.dev/p/web/runs/rh-9j2
+            </span>
+          </p>
+
+          <p class="mt-4 text-[color:var(--color-fg-subtle)]">
+            1 failed · 23 passed
+            <span class="ml-1.5 text-[color:var(--color-fg-subtle)]">(12.4s)</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

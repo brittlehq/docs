@@ -1,0 +1,70 @@
+---
+/**
+ * Stylised version of the Run Detail page's failure-analysis side panel.
+ * Three failing tests grouped by directory, each tagged with the diff
+ * verdict relative to the last green run (NEW / REGRESSED / KNOWN). The
+ * row tones match the live dashboard so the marketing visual feels
+ * familiar to anyone who has used it.
+ */
+const groups = [
+  {
+    dir: 'tests/search',
+    rows: [
+      { name: 'search results echoes query', env: 'webkit', verdict: 'REGRESSED', tone: 'danger' },
+      { name: 'autocomplete dropdown appears', env: 'chromium', verdict: 'KNOWN', tone: 'muted' },
+    ],
+  },
+  {
+    dir: 'tests/visual',
+    rows: [
+      { name: 'article first-paint chrome', env: 'firefox', verdict: 'NEW', tone: 'warning' },
+    ],
+  },
+];
+
+const toneClass: Record<string, string> = {
+  danger: 'border-[color:var(--color-danger)]/40 bg-[color:var(--color-danger)]/15 text-[color:var(--color-danger)]',
+  warning: 'border-[color:var(--color-warning)]/40 bg-[color:var(--color-warning)]/15 text-[color:var(--color-warning)]',
+  muted: 'border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] text-[color:var(--color-fg-muted)]',
+};
+---
+
+<div class="p-5">
+  <div class="mb-4 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-[color:var(--color-fg-subtle)]">
+    <span>Failure analysis</span>
+    <span class="font-mono normal-case tracking-normal text-[color:var(--color-fg-muted)]">
+      3 failing · main
+    </span>
+  </div>
+
+  <div class="flex flex-col gap-3">
+    {groups.map((g) => (
+      <div>
+        <p class="mb-2 font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
+          {g.dir}
+        </p>
+        <ul class="flex flex-col divide-y divide-[color:var(--color-border)]/60 overflow-hidden rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-surface)]">
+          {g.rows.map((r) => (
+            <li class="flex items-center gap-3 px-3 py-2">
+              <span class="block h-1 w-1 shrink-0 rounded-full bg-[color:var(--color-danger)]"></span>
+              <span class="min-w-0 flex-1 truncate text-xs text-[color:var(--color-fg)]">
+                {r.name}
+              </span>
+              <span class="font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
+                {r.env}
+              </span>
+              <span
+                class:list={[
+                  'inline-flex shrink-0 items-center rounded border px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider',
+                  toneClass[r.tone],
+                ]}
+              >
+                {r.verdict}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</div>

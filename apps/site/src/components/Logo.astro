@@ -1,0 +1,184 @@
+---
+/**
+ * Brittle brand mark. Three variants:
+ *   - `glyph`   . Single cracked "b"
+ *   - `wordmark`. Cracked "brittle" word
+ *   - `lockup`  . Glyph + wordmark side by side (default)
+ *
+ * Text fill is `currentColor` so the mark inherits whatever text color the
+ * parent element sets. The amber crack is hard-coded. It's a brand asset
+ * and doesn't track theme tokens.
+ *
+ * Geometry copied 1:1 from the dashboard's Logo component so the site
+ * and the product use the exact same mark.
+ */
+type Variant = 'glyph' | 'wordmark' | 'lockup';
+
+interface Props {
+  variant?: Variant;
+  class?: string;
+}
+
+const { variant = 'lockup', class: className } = Astro.props;
+const CRACK_COLOR = '#E8893B';
+---
+
+{variant === 'glyph' && (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="4 6 72 64"
+    role="img"
+    aria-label="Brittle"
+    class:list={['block', className]}
+  >
+    <defs>
+      <clipPath id="brittle-glyph-upper-s">
+        <rect x="0" y="0" width="80" height="38" />
+      </clipPath>
+      <clipPath id="brittle-glyph-lower-s">
+        <rect x="0" y="42" width="80" height="38" />
+      </clipPath>
+    </defs>
+    <text
+      x="40"
+      y="58"
+      text-anchor="middle"
+      font-family="'Space Grotesk', sans-serif"
+      font-weight="700"
+      font-size="64"
+      letter-spacing="-3"
+      fill="currentColor"
+      clip-path="url(#brittle-glyph-upper-s)"
+    >b</text>
+    <text
+      x="43"
+      y="58"
+      text-anchor="middle"
+      font-family="'Space Grotesk', sans-serif"
+      font-weight="700"
+      font-size="64"
+      letter-spacing="-3"
+      fill="currentColor"
+      clip-path="url(#brittle-glyph-lower-s)"
+    >b</text>
+    <rect x="6" y="39" width="68" height="2" fill={CRACK_COLOR} />
+  </svg>
+)}
+
+{variant === 'wordmark' && (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 260 90"
+    role="img"
+    aria-label="Brittle"
+    class:list={['block', className]}
+  >
+    <defs>
+      <clipPath id="brittle-wordmark-upper-s">
+        <rect x="-20" y="0" width="300" height="43" />
+      </clipPath>
+      <clipPath id="brittle-wordmark-lower-s">
+        <rect x="-20" y="47" width="300" height="60" />
+      </clipPath>
+    </defs>
+    <text
+      x="0"
+      y="69"
+      font-family="'Space Grotesk', sans-serif"
+      font-weight="700"
+      font-size="80"
+      letter-spacing="-4"
+      fill="currentColor"
+      clip-path="url(#brittle-wordmark-upper-s)"
+    >brittle</text>
+    <text
+      x="4"
+      y="73"
+      font-family="'Space Grotesk', sans-serif"
+      font-weight="700"
+      font-size="80"
+      letter-spacing="-4"
+      fill="currentColor"
+      clip-path="url(#brittle-wordmark-lower-s)"
+    >brittle</text>
+    <rect
+      x="2"
+      y="44"
+      width="210"
+      height="2"
+      fill={CRACK_COLOR}
+      transform="rotate(-1 107 45)"
+    />
+  </svg>
+)}
+
+{variant === 'lockup' && (
+  <span class:list={['inline-flex items-center gap-2', className]}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="4 6 72 64"
+      role="img"
+      aria-label="Brittle"
+      class="block h-full w-auto"
+    >
+      <defs>
+        <clipPath id="brittle-lockup-glyph-upper">
+          <rect x="0" y="0" width="80" height="38" />
+        </clipPath>
+        <clipPath id="brittle-lockup-glyph-lower">
+          <rect x="0" y="42" width="80" height="38" />
+        </clipPath>
+      </defs>
+      <text
+        x="40" y="58" text-anchor="middle"
+        font-family="'Space Grotesk', sans-serif"
+        font-weight="700" font-size="64" letter-spacing="-3"
+        fill="currentColor"
+        clip-path="url(#brittle-lockup-glyph-upper)"
+      >b</text>
+      <text
+        x="43" y="58" text-anchor="middle"
+        font-family="'Space Grotesk', sans-serif"
+        font-weight="700" font-size="64" letter-spacing="-3"
+        fill="currentColor"
+        clip-path="url(#brittle-lockup-glyph-lower)"
+      >b</text>
+      <rect x="6" y="39" width="68" height="2" fill={CRACK_COLOR} />
+    </svg>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 260 90"
+      role="img"
+      aria-hidden="true"
+      class="block h-full w-auto"
+    >
+      <defs>
+        <clipPath id="brittle-lockup-word-upper">
+          <rect x="-20" y="0" width="300" height="43" />
+        </clipPath>
+        <clipPath id="brittle-lockup-word-lower">
+          <rect x="-20" y="47" width="300" height="60" />
+        </clipPath>
+      </defs>
+      <text
+        x="0" y="69"
+        font-family="'Space Grotesk', sans-serif"
+        font-weight="700" font-size="80" letter-spacing="-4"
+        fill="currentColor"
+        clip-path="url(#brittle-lockup-word-upper)"
+      >brittle</text>
+      <text
+        x="4" y="73"
+        font-family="'Space Grotesk', sans-serif"
+        font-weight="700" font-size="80" letter-spacing="-4"
+        fill="currentColor"
+        clip-path="url(#brittle-lockup-word-lower)"
+      >brittle</text>
+      <rect
+        x="2" y="44" width="210" height="2"
+        fill={CRACK_COLOR}
+        transform="rotate(-1 107 45)"
+      />
+    </svg>
+  </span>
+)}
