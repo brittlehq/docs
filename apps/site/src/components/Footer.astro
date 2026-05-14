@@ -5,7 +5,8 @@ import Logo from './Logo.astro';
  * Page footer. Three column groups + a single closing tagline. Style stays
  * quiet. The brand and the CTA already did their work above.
  */
-const columns: Array<{ heading: string; links: Array<{ href: string; label: string; external?: boolean }> }> = [
+type FooterColumn = { heading: string; links: Array<{ href: string; label: string; external?: boolean }> };
+const columns: FooterColumn[] = [
   {
     heading: 'Product',
     links: [
@@ -59,6 +60,8 @@ const columns: Array<{ heading: string; links: Array<{ href: string; label: stri
                   href={l.href}
                   target={l.external ? '_blank' : undefined}
                   rel={l.external ? 'noreferrer' : undefined}
+                  data-track="footer_link_clicked"
+                  data-track-props={JSON.stringify({ section: col.heading.toLowerCase().replace(/\s+/g, '_'), label: l.label })}
                   class="text-[color:var(--color-fg-muted)] transition-colors hover:text-[color:var(--color-fg)]"
                 >
                   {l.label}

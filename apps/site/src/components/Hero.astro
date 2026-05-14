@@ -14,7 +14,7 @@ import TestGrid from './TestGrid.astro';
  */
 ---
 
-<section class="relative isolate overflow-hidden">
+<section class="relative isolate overflow-hidden" data-section="hero">
   {/* Backdrop layers ------------------------------------------------------ */}
   <div class="dot-grid absolute inset-0 -z-10" aria-hidden="true"></div>
   {/* Fixed offset from the top instead of a percentage. Percentages
@@ -54,6 +54,8 @@ import TestGrid from './TestGrid.astro';
       <div class="mt-9 flex flex-wrap items-center gap-3">
         <a
           href="https://app.brittle.dev"
+          data-track="demo_clicked"
+          data-track-props='{"source":"hero"}'
           class="inline-flex items-center gap-2 rounded-md bg-[color:var(--color-accent)] px-5 py-2.5 text-sm font-medium text-[color:var(--color-bg)] transition-opacity hover:opacity-90"
         >
           Try the live demo
@@ -65,6 +67,8 @@ import TestGrid from './TestGrid.astro';
           href="https://github.com/brittlehq/brittle"
           target="_blank"
           rel="noreferrer"
+          data-track="github_clicked"
+          data-track-props='{"source":"hero"}'
           class="inline-flex items-center gap-2 rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-5 py-2.5 text-sm font-medium text-[color:var(--color-fg)] transition-colors hover:border-[color:var(--color-fg-subtle)]"
         >
           <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden>

@@ -65,10 +65,37 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 <script>
   import posthog from 'posthog-js';
+
   posthog.init('phc_ou3qsH9eofkkNfuzJBNFriGG9JEJBR3VYfAnG6vYqBjv', {
     api_host: 'https://us.i.posthog.com',
     person_profiles: 'identified_only',
     capture_pageview: true,
     capture_pageleave: true,
+  });
+
+  // Fire section_viewed once the visitor scrolls 25% into each tracked section.
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const section = (entry.target as HTMLElement).dataset['section'];
+        if (section) {
+          posthog.capture('section_viewed', { section });
+          sectionObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.25 },
+  );
+  document.querySelectorAll('[data-section]').forEach((el) => sectionObserver.observe(el));
+
+  // Generic click tracker — add data-track="event_name" to any element and
+  // optionally data-track-props='{"key":"value"}' for extra properties.
+  document.addEventListener('click', (e) => {
+    const target = (e.target as HTMLElement).closest<HTMLElement>('[data-track]');
+    if (!target) return;
+    const event = target.dataset['track'];
+    const raw = target.dataset['trackProps'];
+    if (event) posthog.capture(event, raw ? (JSON.parse(raw) as Record<string, unknown>) : undefined);
   });
 </script>

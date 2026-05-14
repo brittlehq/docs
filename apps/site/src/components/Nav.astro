@@ -25,6 +25,8 @@ const links = [
       {links.map((l) => (
         <a
           href={l.href}
+          data-track="nav_link_clicked"
+          data-track-props={JSON.stringify({ label: l.label })}
           class="transition-colors hover:text-[color:var(--color-fg)]"
         >
           {l.label}
@@ -37,13 +39,17 @@ const links = [
         href="https://github.com/brittlehq/brittle"
         target="_blank"
         rel="noreferrer"
+        data-track="github_clicked"
+        data-track-props='{"source":"nav"}'
         class="hidden text-sm text-[color:var(--color-fg-muted)] transition-colors hover:text-[color:var(--color-fg)] sm:inline"
         aria-label="Brittle on GitHub"
       >
         GitHub
       </a>
       <a
-        href="https://brittle.dev"
+        href="https://app.brittle.dev"
+        data-track="demo_clicked"
+        data-track-props='{"source":"nav"}'
         class="inline-flex items-center gap-1.5 rounded-md bg-[color:var(--color-accent)] px-3 py-1.5 text-sm font-medium text-[color:var(--color-bg)] transition-opacity hover:opacity-90"
       >
         Try the demo

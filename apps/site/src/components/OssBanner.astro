@@ -7,7 +7,7 @@
  */
 ---
 
-<section class="relative py-24">
+<section class="relative py-24" data-section="oss_banner">
   <div class="container-fixed">
     <div
       class="relative overflow-hidden rounded-2xl border border-[color:var(--color-border)] bg-[color:var(--color-surface)] p-10 md:p-14"
@@ -40,6 +40,8 @@
             href="https://github.com/brittlehq/brittle"
             target="_blank"
             rel="noreferrer"
+            data-track="github_clicked"
+            data-track-props='{"source":"oss_banner"}'
             class="inline-flex items-center gap-2 rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-bg-elev)] px-5 py-2.5 text-sm font-medium text-[color:var(--color-fg)] transition-colors hover:border-[color:var(--color-fg-subtle)]"
           >
             <svg class="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden>
@@ -49,6 +51,8 @@
           </a>
           <a
             href="/docs"
+            data-track="docs_clicked"
+            data-track-props='{"page":"self_host","source":"oss_banner"}'
             class="inline-flex items-center gap-1.5 text-sm text-[color:var(--color-fg-muted)] transition-colors hover:text-[color:var(--color-fg)]"
           >
             Self-host guide
