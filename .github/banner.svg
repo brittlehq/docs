@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 260" width="1280" height="260">
+  <defs>
+    <!-- Crack clips: upper half / lower half -->
+    <clipPath id="bw-upper"><rect x="0" y="0" width="1280" height="116"/></clipPath>
+    <clipPath id="bw-lower"><rect x="0" y="124" width="1280" height="136"/></clipPath>
+
+    <!-- Subtle dot grid, fades from centre outward -->
+    <pattern id="bw-dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#ffffff" opacity="0.04"/>
+    </pattern>
+    <radialGradient id="bw-dot-fade" cx="50%" cy="50%" r="55%">
+      <stop offset="0%"   stop-color="white" stop-opacity="1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </radialGradient>
+    <mask id="bw-dot-mask">
+      <rect width="1280" height="260" fill="url(#bw-dot-fade)"/>
+    </mask>
+
+    <!-- Amber radial glow from the top edge -->
+    <radialGradient id="bw-glow" cx="50%" cy="0%" r="70%" gradientUnits="userSpaceOnUse"
+                    x1="0" y1="0" x2="1280" y2="260">
+      <stop offset="0%"   stop-color="#E8893B" stop-opacity="0.18"/>
+      <stop offset="55%"  stop-color="#E8893B" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#E8893B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="260" fill="#0d0d12"/>
+
+  <!-- Dot grid (masked to oval) -->
+  <rect width="1280" height="260" fill="url(#bw-dots)" mask="url(#bw-dot-mask)"/>
+
+  <!-- Amber top glow -->
+  <rect width="1280" height="260" fill="url(#bw-glow)"/>
+
+  <!-- Wordmark — upper half (above crack) -->
+  <text x="640" y="168" text-anchor="middle"
+        font-family="'Space Grotesk',system-ui,-apple-system,BlinkMacSystemFont,sans-serif"
+        font-weight="700" font-size="150" letter-spacing="-8"
+        fill="#eeeef4" clip-path="url(#bw-upper)">brittle</text>
+
+  <!-- Wordmark — lower half (below crack, shifted 8px right + 7px down for split) -->
+  <text x="648" y="175" text-anchor="middle"
+        font-family="'Space Grotesk',system-ui,-apple-system,BlinkMacSystemFont,sans-serif"
+        font-weight="700" font-size="150" letter-spacing="-8"
+        fill="#eeeef4" clip-path="url(#bw-lower)">brittle</text>
+
+  <!-- Amber crack line -->
+  <rect x="140" y="119" width="1000" height="2" fill="#E8893B" opacity="0.85" rx="1"/>
+
+  <!-- Tagline -->
+  <text x="640" y="233" text-anchor="middle"
+        font-family="'JetBrains Mono','Courier New',Courier,monospace"
+        font-size="13" letter-spacing="4" fill="#55556e">PLAYWRIGHT GRID · FLAKE ANALYTICS</text>
+</svg>
