@@ -1,0 +1,83 @@
+---
+/**
+ * Early-access email capture. Fires a PostHog `waitlist_signup` event with
+ * the submitted email — no backend needed. Sits just before the footer so
+ * visitors who've read the whole page get one last conversion opportunity.
+ */
+---
+
+<section class="relative py-24">
+  <div class="container-fixed">
+    <div
+      class="relative overflow-hidden rounded-2xl border border-[color:var(--color-accent)]/20 bg-[color:var(--color-surface)] p-10 text-center md:p-16"
+      style="background: radial-gradient(ellipse 80% 60% at 50% 100%, color-mix(in oklch, var(--color-accent) 6%, transparent), transparent 70%), var(--color-surface);"
+    >
+      <div class="dot-grid-tight absolute inset-0 opacity-20" aria-hidden="true"></div>
+      <div class="brand-crack absolute inset-x-16 top-5" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-xl">
+        <p class="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--color-accent-soft)]">
+          Early access
+        </p>
+        <h2
+          class="mt-3 text-balance text-3xl tracking-tight text-[color:var(--color-fg)] sm:text-4xl"
+          style="font-family: var(--font-brand); font-weight: 700;"
+        >
+          Be first when Brittle Cloud launches.
+        </h2>
+        <p class="mt-4 text-[color:var(--color-fg-muted)] leading-relaxed">
+          Get early-access pricing and a heads-up before we open the waitlist to everyone.
+        </p>
+
+        <form id="early-access-form" class="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <input
+            id="early-access-email"
+            name="email"
+            type="email"
+            required
+            placeholder="you@company.com"
+            class="w-full rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-bg)] px-4 py-2.5 text-sm text-[color:var(--color-fg)] placeholder:text-[color:var(--color-fg-subtle)] outline-none transition-colors focus:border-[color:var(--color-accent)] sm:w-72"
+          />
+          <button
+            type="submit"
+            class="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-[color:var(--color-accent)] px-5 py-2.5 text-sm font-medium text-[color:var(--color-bg)] transition-opacity hover:opacity-90"
+          >
+            Request early access
+            <svg class="h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" aria-hidden>
+              <path d="M5 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+        </form>
+
+        <p
+          id="early-access-success"
+          class="mt-8 hidden text-sm text-[color:var(--color-fg-muted)]"
+        >
+          <span class="mr-1.5 inline-block h-2 w-2 rounded-full bg-[color:var(--color-accent)]"></span>
+          You're on the list — we'll be in touch.
+        </p>
+
+        <p class="mt-6 text-xs text-[color:var(--color-fg-subtle)]">
+          No spam. One email when we launch.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import posthog from 'posthog-js';
+
+  const form = document.getElementById('early-access-form') as HTMLFormElement | null;
+  const successEl = document.getElementById('early-access-success');
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = (document.getElementById('early-access-email') as HTMLInputElement).value.trim();
+    if (email) {
+      posthog.capture('waitlist_signup', { email });
+    }
+    form.classList.add('hidden');
+    successEl?.classList.remove('hidden');
+  });
+</script>

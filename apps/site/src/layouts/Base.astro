@@ -62,3 +62,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <slot />
   </body>
 </html>
+
+<script>
+  import posthog from 'posthog-js';
+  posthog.init('phc_ou3qsH9eofkkNfuzJBNFriGG9JEJBR3VYfAnG6vYqBjv', {
+    api_host: 'https://us.i.posthog.com',
+    person_profiles: 'identified_only',
+    capture_pageview: true,
+    capture_pageleave: true,
+  });
+</script>
