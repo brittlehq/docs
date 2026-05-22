@@ -27,18 +27,18 @@
         {[
           {
             n: '01',
-            title: 'Drop in the reporter',
-            body: 'Add `@brittlehq/playwright-reporter` to your config. Run tests like you do today.',
+            title: 'Pick your adapter',
+            body: 'Drop in the reporter for Playwright, WebdriverIO, Vitest or Jest. Run tests like you do today.',
           },
           {
             n: '02',
             title: 'Run tests anywhere',
-            body: 'CI, laptop, container. Anywhere Playwright runs. No agent, no daemon.',
+            body: 'CI, laptop, container. Wherever your framework already runs. No agent, no daemon.',
           },
           {
             n: '03',
             title: 'Triage from the dashboard',
-            body: 'Open the run, click the failing env. Flakes and regressions are tagged inline.',
+            body: 'Open the run, click the failing env. AI ranks likely-flake failures before you rerun.',
           },
         ].map((step) => (
           <li class="flex gap-5">
@@ -125,6 +125,10 @@
           <p class="text-[color:var(--color-fg-muted)]">
             <span class="ml-2 text-[color:var(--color-fg)]">→</span>
             <span class="ml-2">uploaded 24 sessions · 1 failed</span>
+          </p>
+          <p class="text-[color:var(--color-fg-muted)]">
+            <span class="ml-2 text-[color:var(--color-fg)]">→</span>
+            <span class="ml-2">ai prediction: 1 likely flake · 0 regressions</span>
           </p>
           <p class="text-[color:var(--color-fg-muted)]">
             <span class="ml-2 text-[color:var(--color-fg)]">→</span>

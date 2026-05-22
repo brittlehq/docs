@@ -2,22 +2,23 @@
 /**
  * Stylised version of the Run Detail page's failure-analysis side panel.
  * Three failing tests grouped by directory, each tagged with the diff
- * verdict relative to the last green run (NEW / REGRESSED / KNOWN). The
- * row tones match the live dashboard so the marketing visual feels
- * familiar to anyone who has used it.
+ * verdict relative to the last green run (NEW / REGRESSED / KNOWN) plus
+ * an AI flake-probability score so the marketing visual carries the new
+ * failure-prediction story. Row tones match the live dashboard so it
+ * feels familiar to anyone who has used it.
  */
 const groups = [
   {
     dir: 'tests/search',
     rows: [
-      { name: 'search results echoes query', env: 'webkit', verdict: 'REGRESSED', tone: 'danger' },
-      { name: 'autocomplete dropdown appears', env: 'chromium', verdict: 'KNOWN', tone: 'muted' },
+      { name: 'search results echoes query', env: 'webkit', flake: 12, verdict: 'REGRESSED', tone: 'danger' },
+      { name: 'autocomplete dropdown appears', env: 'chromium', flake: 84, verdict: 'KNOWN', tone: 'muted' },
     ],
   },
   {
     dir: 'tests/visual',
     rows: [
-      { name: 'article first-paint chrome', env: 'firefox', verdict: 'NEW', tone: 'warning' },
+      { name: 'article first-paint chrome', env: 'firefox', flake: 31, verdict: 'NEW', tone: 'warning' },
     ],
   },
 ];
@@ -31,7 +32,7 @@ const toneClass: Record<string, string> = {
 
 <div class="p-5">
   <div class="mb-4 flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-[color:var(--color-fg-subtle)]">
-    <span>Failure analysis</span>
+    <span>AI-ranked failures</span>
     <span class="font-mono normal-case tracking-normal text-[color:var(--color-fg-muted)]">
       3 failing · main
     </span>
@@ -52,6 +53,18 @@ const toneClass: Record<string, string> = {
               </span>
               <span class="font-mono text-[10px] text-[color:var(--color-fg-subtle)]">
                 {r.env}
+              </span>
+              <span
+                class:list={[
+                  'inline-flex shrink-0 items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[9px] tracking-wider',
+                  r.flake >= 70
+                    ? 'border-[color:var(--color-accent)]/40 bg-[color:var(--color-accent)]/15 text-[color:var(--color-accent-soft)]'
+                    : 'border-[color:var(--color-border)] bg-[color:var(--color-surface-2)] text-[color:var(--color-fg-muted)]',
+                ]}
+                title="AI flake probability"
+              >
+                <span class="opacity-70">flake</span>
+                <span>{r.flake}%</span>
               </span>
               <span
                 class:list={[

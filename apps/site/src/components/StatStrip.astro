@@ -10,8 +10,9 @@
  * here.
  */
 const items = [
-  { kicker: 'rollup key', value: '(testId, branch, env, target)' },
-  { kicker: 'flake rule', value: 'same commit, both outcomes' },
+  { kicker: 'adapters', value: 'playwright · wdio · vitest · jest' },
+  { kicker: 'grid runtime', value: 'playwright only' },
+  { kicker: 'ai prediction', value: 'ranks flakes before reruns' },
   { kicker: 'deploy', value: 'one container, one Postgres' },
 ];
 ---
@@ -19,7 +20,7 @@ const items = [
 <section class="relative -mt-12 py-10">
   <div class="container-fixed">
     <div
-      class="relative grid items-center gap-y-6 rounded-xl border border-[color:var(--color-border)]/60 bg-[color:var(--color-surface)]/40 px-8 py-6 backdrop-blur-sm md:grid-cols-3 md:gap-x-10 md:py-7"
+      class="relative grid items-center gap-y-6 rounded-xl border border-[color:var(--color-border)]/60 bg-[color:var(--color-surface)]/40 px-8 py-6 backdrop-blur-sm sm:grid-cols-2 md:grid-cols-4 md:gap-x-8 md:py-7"
     >
       <div class="brand-crack-soft pointer-events-none absolute inset-x-10 top-0 -translate-y-1/2" aria-hidden="true"></div>
 
@@ -27,7 +28,7 @@ const items = [
         <div
           class:list={[
             'flex flex-col gap-1',
-            i > 0 && 'md:border-l md:border-[color:var(--color-border)] md:pl-10',
+            i > 0 && 'md:border-l md:border-[color:var(--color-border)] md:pl-8',
           ]}
         >
           <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-[color:var(--color-fg-subtle)]">
