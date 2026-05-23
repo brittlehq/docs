@@ -12,7 +12,7 @@ have the dashboard open in your browser before the kettle boils.
 
 That's the whole list.
 
-## Step 1 — Create the Compose file
+## Step 1. Create the Compose file
 
 Make a new directory, then save the file below as `docker-compose.yml`.
 
@@ -90,7 +90,7 @@ exposing the Hub to anyone other than yourself. Generate fresh
 strings with `openssl rand -hex 32`.
 :::
 
-## Step 2 — Bring up the stack
+## Step 2. Bring up the stack
 
 From the same directory:
 
@@ -107,13 +107,13 @@ docker compose ps
 
 `brittle` and `postgres` should both show as `(healthy)`.
 
-## Step 3 — Open the dashboard
+## Step 3. Open the dashboard
 
 ```
 http://localhost:3100
 ```
 
-## Step 4 — Complete the setup wizard
+## Step 4. Complete the setup wizard
 
 The first time you open the dashboard, three short forms appear.
 
@@ -127,20 +127,20 @@ something short.
 
 Click through and you'll land on the project's empty Overview page.
 
-## Step 5 — Mint a token
+## Step 5. Mint a token
 
 In the left sidebar, click **Manage → Projects**, pick the project
 you just created, open the **Tokens** tab, and click **New token**.
 
-- **Kind: service** — long-lived, for CI runs.
-- **Kind: personal** — bound to your user account, for laptops.
+- **Kind: service**. Long-lived, for CI runs.
+- **Kind: personal**. Bound to your user account, for laptops.
 
 Click **Create**, then copy the token immediately. The plaintext is
 shown only once.
 
 ## You're done
 
-Paste the token into your test reporter — see
+Paste the token into your test reporter. See
 [Quickstart](/docs/quickstart) for the wiring.
 
 ## Stopping and restarting
@@ -154,6 +154,6 @@ docker compose down -v         # also wipe Postgres + artifacts
 
 ## Next steps
 
-- [Quickstart](/docs/quickstart) — wire results from your existing tests.
-- [Self-host overview](/docs/self-host/overview) — what's in the stack.
-- [Production notes](/docs/self-host/production) — TLS, a real domain, backups.
+- [Quickstart](/docs/quickstart) wires results from your existing tests.
+- [Self-host overview](/docs/self-host/overview) covers what's in the stack.
+- [Production notes](/docs/self-host/production) for TLS, a real domain, and backups.

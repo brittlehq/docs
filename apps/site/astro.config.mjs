@@ -82,6 +82,7 @@ export default defineConfig({
           items: [
             { label: 'Overview', link: '/docs/self-host/overview' },
             { label: 'Hub configuration', link: '/docs/self-host/configuration' },
+            { label: 'AI failure analysis', link: '/docs/self-host/ai-analysis' },
             { label: 'Production notes', link: '/docs/self-host/production' },
           ],
         },

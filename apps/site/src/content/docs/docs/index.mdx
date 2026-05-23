@@ -5,9 +5,9 @@ description: What Brittle is, what it isn't, and whether you should keep reading
 
 Brittle is a self-hosted dashboard for test results. You install one
 Docker container, point your test reporter at it, and your CI runs
-start arriving as something you can actually read — grouped by branch
-and commit, failures clustered by file, flake history per test, and
-the video / trace / log payload from each session one click away.
+start arriving as something you can actually read. Runs grouped by
+branch and commit. Failures clustered by file. Flake history per test.
+The video, trace, and logs from each session one click away.
 
 If your CI runs Playwright, WebdriverIO, Jest, or Vitest and you've
 ever re-run a failing test just to see it pass, this is built for that
@@ -24,7 +24,7 @@ moment.
   test name, with `NEW` / `KNOWN` / `REGRESSED` tags so you can ignore
   the ones you've already triaged.
 - **Stores the evidence.** Playwright trace, video, HAR, console log,
-  network log — anything the reporter captures rides along. All
+  network log. Anything the reporter captures rides along. All
   addressable from the Session Detail page, all replayable in the
   browser without leaving the dashboard.
 - **Tracks each test through time.** A per-test view shows the
@@ -32,9 +32,9 @@ moment.
   reading as green.
 - **Optionally clusters failures with AI.** Bring your own provider
   key (Gemini, Anthropic, OpenAI), and the hub groups failure
-  signatures into patterns — *"17 tests blew up on the same locator
-  selector"* — so triage is one decision per cluster, not one per
-  test. Off by default; you opt in per organisation.
+  signatures into patterns like *"17 tests blew up on the same locator
+  selector"*. Triage is one decision per cluster, not one per test.
+  Off by default; you opt in per organisation.
 
 ## What it isn't
 
@@ -43,9 +43,9 @@ Brittle deliberately stays out of a few lanes:
 - **Not a test runner.** Playwright is your runner. WebdriverIO is
   your runner. Brittle reads what your runner emits and stores it
   somewhere browsable.
-- **Not a CI system.** GitHub Actions, GitLab CI, Buildkite, Jenkins
-  — whatever you have, Brittle plugs into the run, it doesn't
-  replace it.
+- **Not a CI system.** GitHub Actions, GitLab CI, Buildkite, Jenkins,
+  whatever you have. Brittle plugs into the run; it doesn't replace
+  it.
 
 ## The shape of the install
 
@@ -56,16 +56,16 @@ config.
 
 ## Where to go next
 
-- [**Installation**](/docs/installation) — bring up Brittle locally
+- [**Installation**](/docs/installation): bring up Brittle locally
   with Docker Compose.
-- [**Quickstart**](/docs/quickstart) — add the reporter to an
-  existing suite and see your first run.
-- [**Reporter configuration**](/docs/reporter/configuration) — every
+- [**Quickstart**](/docs/quickstart): add the reporter to an existing
+  suite and see your first run.
+- [**Reporter configuration**](/docs/reporter/configuration): every
   option the reporter accepts and what each one does.
 
 :::tip
 Want a sandbox with a working test suite already wired up? Clone
-[`brittlehq/reporter-examples`](https://github.com/brittlehq/reporter-examples)
-— the Hub, dashboard, Postgres, and a working Playwright / WDIO /
+[`brittlehq/reporter-examples`](https://github.com/brittlehq/reporter-examples).
+The Hub, dashboard, Postgres, and a working Playwright / WDIO /
 Jest / Vitest example come up together with `docker compose up -d`.
 :::

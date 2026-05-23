@@ -4,8 +4,8 @@ description: TLS, S3 artifacts, secret rotation, backups, and upgrades for a Bri
 ---
 
 The [Installation](/docs/installation) compose stack is fine for personal
-use and small teams. Production deployments — anything with a real
-domain, real users, or compliance obligations — want a few more
+use and small teams. Production deployments (anything with a real
+domain, real users, or compliance obligations) want a few more
 considerations on top. This page covers them.
 
 ## TLS via Caddy
@@ -29,8 +29,8 @@ caddy:
     - '443:443'
 ```
 
-That's it — Caddy fetches a cert on first start. Ports 80 and 443
-need to be reachable from the public internet.
+Caddy fetches a cert on first start. Ports 80 and 443 need to be
+reachable from the public internet.
 
 ## S3 artifact storage
 
@@ -49,13 +49,11 @@ artifacts:
 
 For non-AWS providers:
 
-- **Cloudflare R2** — set `endpoint`,
-  `forcePathStyle: true`.
-- **MinIO** — set `endpoint`, `forcePathStyle: true`.
-- **GCS in S3-compat mode** — set `endpoint`,
-  `forcePathStyle: false`.
+- **Cloudflare R2**: set `endpoint`, `forcePathStyle: true`.
+- **MinIO**: set `endpoint`, `forcePathStyle: true`.
+- **GCS in S3-compat mode**: set `endpoint`, `forcePathStyle: false`.
 
-Plan egress capacity on your S3 provider — the Hub doesn't proxy
+Plan egress capacity on your S3 provider. The Hub doesn't proxy
 artifact bytes; reporters and the dashboard hit the bucket directly.
 
 ## Secrets
@@ -65,7 +63,7 @@ Three secrets the Hub needs:
 | Secret                  | Generate with                | Rotation                                                                 |
 | ----------------------- | ---------------------------- | ------------------------------------------------------------------------ |
 | `JWT_SECRET`            | `openssl rand -hex 32`        | Swap value + restart Hub. Existing session cookies invalidate.           |
-| `BRITTLE_AI_SECRET_KEY` | `openssl rand -hex 32`        | **Don't rotate** — per-org AI keys in the DB are encrypted with this. Re-encryption tooling not yet shipped. |
+| `BRITTLE_AI_SECRET_KEY` | `openssl rand -hex 32`        | **Don't rotate.** Per-org AI keys in the DB are encrypted with this. Re-encryption tooling is not yet shipped. |
 | `DATABASE_URL` password | Postgres `ALTER USER ...`    | Swap value + restart Hub. Active connections drop and re-establish.      |
 
 Project tokens (the ones reporters use) rotate from the dashboard.
@@ -91,14 +89,14 @@ session history you want to keep recoverable.
 
 The Hub image is published at:
 
-- `ghcr.io/brittlehq/brittle:0.1.2` — pinned exact version.
-- `ghcr.io/brittlehq/brittle:0.1` — latest patch of 0.1.x.
-- `ghcr.io/brittlehq/brittle:latest` — moves with every release.
+- `ghcr.io/brittlehq/brittle:0.1.2` is a pinned exact version.
+- `ghcr.io/brittlehq/brittle:0.1` tracks the latest patch of 0.1.x.
+- `ghcr.io/brittlehq/brittle:latest` moves with every release.
 
-For production, pin to a specific version (`0.1.2` etc.) — `:latest`
-is fine for the local stack but a bad idea for a production
-deployment because surprise upgrades happen on every `docker compose
-pull`.
+For production, pin to a specific version (`0.1.2` etc.). The
+`:latest` tag is fine for the local stack but a bad idea for a
+production deployment, because surprise upgrades happen on every
+`docker compose pull`.
 
 To upgrade:
 
@@ -110,14 +108,14 @@ docker compose up -d
 Migrations are backwards-compatible within a minor version; you can
 roll back if needed.
 
-Read the release notes before upgrading across a minor — they're at
+Read the release notes before upgrading across a minor. They're at
 [github.com/brittlehq/brittle/releases](https://github.com/brittlehq/brittle/releases).
 
 ## Monitoring
 
 The Hub exposes one internal endpoint useful for monitoring:
 
-- `GET /health` — returns 200 if Postgres is reachable and migrations
+- `GET /health`. Returns 200 if Postgres is reachable and migrations
   are caught up. No auth required.
 
 For deeper visibility (queue depth, AI job status), the
@@ -126,11 +124,11 @@ For deeper visibility (queue depth, AI job status), the
 them returning 503.
 
 Logs go to stdout in JSON (pino format). Aggregate them with
-whatever you already have — Loki, Datadog, CloudWatch.
+whatever you already have: Loki, Datadog, CloudWatch.
 
 ## Next steps
 
-- [Hub configuration](/docs/self-host/configuration) — every field
-  + env var.
-- [Self-host overview](/docs/self-host/overview) — the deployment
-  shape.
+- [Hub configuration](/docs/self-host/configuration) lists every
+  field and env var.
+- [Self-host overview](/docs/self-host/overview) covers the
+  deployment shape.

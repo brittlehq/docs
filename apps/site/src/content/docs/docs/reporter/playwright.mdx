@@ -33,9 +33,9 @@ export default defineConfig({
 });
 ```
 
-Brittle's reporter runs in parallel with `list` / `html` / `dot` —
-none of them interact. You don't need to drop your existing
-reporters.
+Brittle's reporter runs in parallel with `list`, `html`, `dot`, and
+anything else. None of them interact. You don't need to drop your
+existing reporters.
 
 ## Run
 
@@ -51,7 +51,7 @@ each test finishes.
 ## What gets captured
 
 - Test result (pass / fail / skipped / timed-out / flaky).
-- Full retry history — every attempt is its own row.
+- Full retry history. Every attempt is its own row.
 - Playwright trace (when `trace: 'on'` or `'retain-on-failure'`).
 - Video (when `video: 'on'` or `'retain-on-failure'`).
 - HAR (when configured via `contextOptions`).
@@ -59,7 +59,7 @@ each test finishes.
 - `test.tag()` values, attached to each session.
 - Per-attempt screenshots from `expect(...).toHaveScreenshot()`.
 
-The reporter doesn't enable any of these for you — they remain
+The reporter doesn't enable any of these for you. They stay
 controlled by `playwright.config.ts`. Whatever Playwright would have
 written to `test-results/` on a local run is what arrives on the hub.
 
@@ -111,7 +111,7 @@ so they don't disagree.
 
 ## Next steps
 
-- [Configuration reference](/docs/reporter/configuration) — every
+- [Configuration reference](/docs/reporter/configuration) for every
   option, type, and default.
-- [Reporter overview](/docs/reporter/overview) — concepts that apply
-  to every framework.
+- [Reporter overview](/docs/reporter/overview) for concepts that
+  apply to every framework.

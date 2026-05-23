@@ -34,8 +34,8 @@ export default defineConfig({
 });
 ```
 
-Note the `new` — Vitest's reporter API takes class instances rather
-than `[name, options]` tuples like Playwright/Jest. The other
+Note the `new`. Vitest's reporter API takes class instances rather
+than `[name, options]` tuples like Playwright or Jest. The other
 framework patterns won't compile here.
 
 ## Run
@@ -67,12 +67,12 @@ Detail page: *math › positive numbers › adds two positive numbers*.
 ## Common stumbles
 
 - **`vite.config.ts` vs `vitest.config.ts`.** If you have a single
-  shared config, configure the reporter under the `test:` block —
-  that's the only place Vitest reads `reporters` from.
+  shared config, configure the reporter under the `test:` block.
+  That's the only place Vitest reads `reporters` from.
 - **In-source tests.** Vitest's in-source test mode (
   `if (import.meta.vitest)`) is supported; the reporter sees them as
   normal tests with the source file as their location.
-- **Worker pool config (`pool: 'forks' | 'threads'`)** — both behave
+- **Worker pool config (`pool: 'forks' | 'threads'`).** Both behave
   identically. One Run row per `vitest run`.
 
 ## Options
@@ -82,7 +82,7 @@ It has no Vitest-specific options.
 
 ## Next steps
 
-- [Configuration reference](/docs/reporter/configuration) — every
+- [Configuration reference](/docs/reporter/configuration) for every
   option, type, and default.
-- [Reporter overview](/docs/reporter/overview) — concepts that apply
-  to every framework.
+- [Reporter overview](/docs/reporter/overview) for concepts that
+  apply to every framework.

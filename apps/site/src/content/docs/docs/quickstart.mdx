@@ -3,21 +3,21 @@ title: Quickstart
 description: Wire an existing test suite into Brittle in about two minutes.
 ---
 
-You have a test suite — Playwright, WebdriverIO, Jest, or Vitest — and
-you want to see its results on a Brittle dashboard. This page is the
-shortest path.
+You have a test suite for Playwright, WebdriverIO, Jest, or Vitest,
+and you want to see its results on a Brittle dashboard. This page is
+the shortest path.
 
 ## You'll need
 
 - A working test suite for one of the supported frameworks.
 - A Brittle hub. Two options:
-  - The hosted demo at [brittle.dev](https://brittle.dev) — fastest
-    way to see what the dashboard looks like.
+  - The hosted demo at [brittle.dev](https://brittle.dev) is the
+    fastest way to see what the dashboard looks like.
   - A self-hosted hub. [Installation](/docs/installation) is the
-    Docker Compose walkthrough — about five minutes.
+    Docker Compose walkthrough, about five minutes.
 - A project token. In the dashboard, click
   **Manage → Projects**, pick your project, open the **Tokens** tab,
-  and mint one of type **service**. Copy it immediately — the
+  and mint one of type **service**. Copy it immediately. The
   plaintext is shown once.
 
 ## Install the reporter
@@ -59,8 +59,7 @@ export default defineConfig({
 ```
 
 For the wiring in WebdriverIO / Jest / Vitest, see the matching
-[reporter](/docs/reporter/playwright) page — each one is a single
-config-file edit.
+reporter page. Each one is a single config-file edit.
 
 ## Run your tests
 
@@ -79,7 +78,7 @@ Sessions stream to the dashboard live as the suite runs.
   WDIO screenshots + command log, Jest/Vitest stack traces.
 - Per-test annotations (owner, severity, issue links) if you push
   them through your framework's annotation API.
-- The git commit SHA, branch, and a few CI markers — picked up
+- The git commit SHA, branch, and a few CI markers, picked up
   automatically from the working tree.
 
 ## Already not seeing results?
@@ -101,7 +100,7 @@ the `[brittle]` prefix by default.
 - The per-framework pages: [Playwright](/docs/reporter/playwright),
   [WebdriverIO](/docs/reporter/wdio), [Jest](/docs/reporter/jest),
   [Vitest](/docs/reporter/vitest).
-- [Reporter configuration](/docs/reporter/configuration) — every
+- [Reporter configuration](/docs/reporter/configuration): every
   option each reporter accepts.
-- [Self-host overview](/docs/self-host/overview) — run your own hub
-  on a VPS, a Kubernetes cluster, or a laptop.
+- [Self-host overview](/docs/self-host/overview) if you want to run
+  your own hub.

@@ -5,7 +5,7 @@ description: Every field in hub.config.yaml and every env var the Brittle Hub re
 
 The Hub reads a YAML config file at startup from
 `BRITTLE_CONFIG_PATH` (default: `/etc/brittle/hub.config.yaml`). Most
-deployments only need the four secrets — `DATABASE_URL`, `JWT_SECRET`,
+deployments only need the four secrets: `DATABASE_URL`, `JWT_SECRET`,
 `BRITTLE_AI_SECRET_KEY`, and whatever your artifact store needs.
 
 This page lists the full schema. The
@@ -80,10 +80,10 @@ artifacts:
     region: us-east-1
     accessKeyId: ${AWS_ACCESS_KEY_ID}
     secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
-    # Optional — set for non-AWS providers (MinIO, R2, GCS S3-compat).
+    # Optional. Set for non-AWS providers (MinIO, R2, GCS S3-compat).
     endpoint: https://example.r2.cloudflarestorage.com
     forcePathStyle: true
-    # Optional — when minting download URLs, use this hostname instead
+    # Optional. When minting download URLs, use this hostname instead
     # of `endpoint`. Lets internal traffic stay on the private endpoint
     # while browsers/CI runners hit a public CDN URL.
     publicEndpoint: https://cdn.example.com
@@ -91,7 +91,7 @@ artifacts:
 ```
 
 The `s3:` sub-block applies only when `store: s3://...`. Inner fields
-are individually optional — set the ones your provider needs.
+are individually optional. Set the ones your provider needs.
 
 ## `ai`
 
@@ -123,7 +123,7 @@ the endpoints return 503. See
 [Production notes](/docs/self-host/production#monitoring).
 
 The schema also includes a few placeholder blocks (`session`,
-`nodes`, `tunnel`) that don't do anything today — leave them empty
+`nodes`, `tunnel`) that don't do anything today. Leave them empty
 or omit them entirely.
 
 ## Env vars the Hub reads
@@ -150,7 +150,7 @@ docker compose restart brittle
 
 ## Next steps
 
-- [Production notes](/docs/self-host/production) — TLS, secret
-  rotation, backups.
-- [Self-host overview](/docs/self-host/overview) — the shape of a
-  deployment.
+- [Production notes](/docs/self-host/production) for TLS, secret
+  rotation, and backups.
+- [Self-host overview](/docs/self-host/overview) covers the shape of
+  a deployment.

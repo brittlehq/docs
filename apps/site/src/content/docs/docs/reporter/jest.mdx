@@ -4,7 +4,7 @@ description: Wire @brittlehq/jest-reporter into an existing Jest project.
 ---
 
 `@brittlehq/jest-reporter` plugs into Jest's reporter slot. Results
-stream to the hub one spec file at a time — the dashboard fills in
+stream to the hub one spec file at a time. The dashboard fills in
 progressively rather than waiting for the whole suite to finish.
 
 ## Install
@@ -32,7 +32,7 @@ module.exports = {
 };
 ```
 
-`'default'` is Jest's built-in reporter that prints to stdout — keep
+`'default'` is Jest's built-in reporter that prints to stdout. Keep
 it; Brittle's reporter sits next to it without interaction.
 
 ## Run
@@ -47,7 +47,7 @@ pnpm test
 
 - Test result (pass / fail / skipped / todo) plus duration.
 - Full error message + stack trace for any failure.
-- Test environment name (`node` / `jsdom`) — extracted from Jest's
+- Test environment name (`node` or `jsdom`), extracted from Jest's
   `testEnvironment` config and shown on the Session Detail page.
 - The suite path (file + describe-block titles) so the dashboard
   shows the full breadcrumb, not just the leaf test name.
@@ -67,7 +67,7 @@ mid-run on long suites.
 - **`testRegex` vs `testMatch` matters.** The reporter only knows
   about tests Jest actually executed. If your config excludes a
   file, Brittle never sees it.
-- **`--maxWorkers` doesn't split runs** — always one Run row per
+- **`--maxWorkers` doesn't split runs.** Always one Run row per
   `jest` invocation.
 
 ## Options
@@ -77,7 +77,7 @@ It has no Jest-specific options.
 
 ## Next steps
 
-- [Configuration reference](/docs/reporter/configuration) — every
+- [Configuration reference](/docs/reporter/configuration) for every
   option, type, and default.
-- [Reporter overview](/docs/reporter/overview) — concepts that apply
-  to every framework.
+- [Reporter overview](/docs/reporter/overview) for concepts that
+  apply to every framework.

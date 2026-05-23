@@ -1,0 +1,132 @@
+---
+title: AI failure analysis
+description: Configure Brittle to cluster failing test runs by root cause.
+---
+
+Brittle can group failing tests into clusters and tag each cluster
+with a likely root cause. It is off by default. You bring the LLM
+provider key, Brittle handles the analysis.
+
+## What you get
+
+Every completed run goes through a quick analysis pass. Failing
+sessions get clustered by error similarity. Each cluster picks up a
+short label like *"Timeout on element selector"* or *"Auth redirect
+loop"*. You see these on the Run detail page next to the regular
+failure list.
+
+If a provider key is missing, or the call fails for any reason, runs
+still complete normally. The dashboard just skips the AI block on
+that run.
+
+## Prerequisites
+
+* A self-hosted Brittle hub (see [Installation](/docs/installation)).
+* An API key from one of the supported providers:
+  * OpenAI
+  * Anthropic
+  * Google Gemini
+  * Ollama (local; no API key needed)
+
+## Step 1. Enable AI at the hub level
+
+The hub has a master switch. Without it, even orgs that configured
+their own provider get nothing.
+
+Open `hub.config.yaml` and set:
+
+```yaml
+ai:
+  enabled: true
+```
+
+Then restart the hub:
+
+```bash
+docker compose restart brittle
+```
+
+That is all the hub config needs. The rest happens in the dashboard.
+
+## Step 2. Configure a provider in the dashboard
+
+Sign in as an org admin. Click **Manage → Organization** in the
+sidebar and open the **AI** tab.
+
+There are four things to fill in:
+
+**Enable AI failure analysis for this org.** Tick this. The toggle
+is what actually starts the analysis worker for your org. Both
+gates (hub-level and org-level) need to be on.
+
+**Provider.** Pick OpenAI, Anthropic, Gemini, or Ollama.
+
+**Model.** Optional. Each provider has a sensible default; override
+if you want a specific one (e.g. `gpt-5-mini`, `claude-haiku-4-5`,
+`gemini-2.5-flash`, `llama3`).
+
+**API key.** Paste it. The key is stored encrypted and never shown
+back to you in plaintext. If you ever need to rotate, click
+**Replace key**.
+
+For Ollama only, an extra **Endpoint** field appears. Point it at
+your local Ollama instance, typically `http://localhost:11434`. From
+inside the Brittle container, `localhost` is the container, so use
+`http://host.docker.internal:11434` or your host's LAN IP.
+
+Click **Save**. The next test run picks up the new config.
+
+## Step 3. See it work
+
+Run a test suite that has at least a couple of failing tests. Open
+the run on the dashboard. After a minute or so, an *AI insights*
+section appears next to the failure list, with the cluster labels
+and the tests grouped under each.
+
+For a per-call view, open **AI Observability** in the sidebar. It
+lists every LLM request the hub has made, with status, latency,
+token counts, and a full prompt + response viewer.
+
+## Cost
+
+Brittle makes one provider call per completed run with at least one
+failure. The prompt inlines the failing sessions' stack traces.
+Token usage for a typical five-failure run is roughly 3 000 input
+and 500 output tokens. At current OpenAI pricing for `gpt-5-mini`
+that is well under a tenth of a cent per run.
+
+If you want to keep an eye on it, the AI Observability page totals
+calls and spend at the top.
+
+## Common stumbles
+
+**Saved a provider but no insights showing.** Check both toggles.
+The hub-level `ai.enabled` in `hub.config.yaml` and the org-level
+*Enable* checkbox both need to be on.
+
+**`401 Unauthorized` on the AI Observability page.** The API key is
+wrong or expired. Click **Replace key** on the Org AI tab and paste
+a fresh one.
+
+**Ollama unreachable.** From inside the Brittle container, `localhost`
+is the container itself, not your machine. Use
+`http://host.docker.internal:11434` on Docker Desktop, or your host's
+LAN IP on Linux.
+
+## Switching providers later
+
+Open the **AI** tab. Change the *Provider* dropdown. Paste a new key.
+Save. The next run uses the new provider. AI insights already
+attached to older runs stay visible; they don't get re-analysed.
+
+## Turning it off
+
+Untick the org-level *Enable* checkbox. Existing insights stay
+visible. No new analyses run until you switch it back on.
+
+## Next steps
+
+* [Hub configuration](/docs/self-host/configuration) for the full
+  `ai:` block reference.
+* AI Observability page in the dashboard for the per-call trace of
+  every LLM request.

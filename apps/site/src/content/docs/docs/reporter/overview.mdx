@@ -1,6 +1,6 @@
 ---
 title: Reporter overview
-description: Concepts that apply across every Brittle reporter — tokens, env vars, run grouping, what gets captured.
+description: Concepts that apply across every Brittle reporter. Tokens, env vars, run grouping, what gets captured.
 ---
 
 Brittle ships one reporter package per supported framework:
@@ -23,8 +23,8 @@ As each test finishes the reporter posts:
 - Pass / fail / skipped outcome, plus duration.
 - Any failure messages, stack traces, and per-attempt history (for
   retries).
-- Whatever attachments the framework captured — Playwright trace,
-  Playwright/WDIO video, Jest snapshots, etc.
+- Whatever attachments the framework captured. Playwright trace,
+  Playwright/WDIO video, Jest snapshots, and so on.
 - Per-test annotations and tags, if your framework supports them.
 
 Sessions stream to the dashboard live; you don't wait for the whole
@@ -32,9 +32,9 @@ suite.
 
 ## Run grouping
 
-Multiple test workers, multiple shards, multiple CI jobs — they all
-need to converge on one **Run** row on the dashboard. The reporter
-handles this via a shared `runName`:
+Multiple test workers, multiple shards, multiple CI jobs all need to
+converge on one **Run** row on the dashboard. The reporter handles
+this via a shared `runName`:
 
 - Set `runName` explicitly in your reporter config, *or*
 - Set the `BRITTLE_RUN_NAME` env var, *or*
@@ -42,7 +42,7 @@ handles this via a shared `runName`:
   (`GITHUB_RUN_ID`, `BUILDKITE_BUILD_ID`, `CI_PIPELINE_ID`, etc.).
 
 In CI, auto-detection is usually all you need. Locally, you can leave
-it unset — parallel workers spawned by the same test runner converge
+it unset. Parallel workers spawned by the same test runner converge
 on one row.
 
 ## Authentication
@@ -56,7 +56,7 @@ Every reporter needs two values to talk to the hub:
 
 Mint the token from **Manage → Projects → [your project] → Tokens**.
 The default scopes (`session:create`, `session:control`,
-`artifact:read`) are what every reporter needs — leave them ticked.
+`artifact:read`) are what every reporter needs. Leave them ticked.
 
 ## Git auto-detection
 
@@ -69,7 +69,7 @@ ran in, and posts:
 - `branch`
 - `repoUrl` (parsed from `git remote get-url origin`)
 
-Each of these is overridable explicitly in the reporter config — set
+Each of these is overridable explicitly in the reporter config. Set
 the field directly when you want CI-provided values (`GITHUB_SHA`,
 `GITHUB_REF_NAME`) instead of git's view of the working tree. That's
 common on shallow / sparse checkouts where `git rev-parse` returns
@@ -91,9 +91,9 @@ dashboard." Safe to leave on in CI if you want richer logs.
 
 ## Per-framework pages
 
-Each one is short — a copy-pasteable config block and the framework's
-quirks (Playwright's `runMetadata` shape, WDIO's worker-per-spec
-model, Jest/Vitest snapshot capture).
+Each one is short. A copy-pasteable config block, plus the
+framework's quirks (Playwright's `runMetadata` shape, WDIO's
+worker-per-spec model, Jest/Vitest snapshot capture).
 
 - [Playwright](/docs/reporter/playwright)
 - [WebdriverIO](/docs/reporter/wdio)
