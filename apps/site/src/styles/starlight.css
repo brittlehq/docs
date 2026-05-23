@@ -6,7 +6,14 @@
  * accent colour — rapide ships with a green accent and we want amber to
  * match the marketing site. Everything else stays untouched so the
  * docs benefit from rapide's polished defaults.
+ *
+ * Space Grotesk is loaded so the lockup SVG in the header (which
+ * inlines `font-family: 'Space Grotesk'`) actually picks up the brand
+ * face rather than falling back to a generic sans-serif. Marketing
+ * pages load it via Base.astro; Starlight needs its own load.
  */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap');
 
 :root,
 :root[data-theme='light'],

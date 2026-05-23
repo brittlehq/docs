@@ -36,11 +36,13 @@ export default defineConfig({
         },
       },
       logo: {
-        // Inline SVG is overkill here; the cracked-b favicon does the job
-        // and the Starlight sidebar already shows the title text.
-        src: './public/favicon.svg',
+        // Lockup (cracked-b glyph + "brittle" wordmark) generated from the
+        // home page's Logo.astro 1:1, written out as a static SVG so
+        // Starlight can pick it up here. `replacesTitle: true` swaps out
+        // the default "Brittle Docs" text — the wordmark already says it.
+        src: './public/brittle-logo.svg',
         alt: 'Brittle',
-        replacesTitle: false,
+        replacesTitle: true,
       },
       customCss: ['./src/styles/starlight.css'],
       social: [

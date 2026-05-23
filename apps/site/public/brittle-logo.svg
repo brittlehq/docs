@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 90" role="img" aria-label="Brittle" fill="currentColor">
+  <!-- Cracked-b glyph: replicates the `glyph` variant of Logo.astro 1:1.
+       Two stacked `b` glyphs offset 3 units horizontally, clipped above
+       and below an amber crack line at y=39–41. -->
+  <svg x="0" y="0" width="101" height="90" viewBox="4 6 72 64" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <clipPath id="brittle-lockup-glyph-upper">
+        <rect x="0" y="0" width="80" height="38" />
+      </clipPath>
+      <clipPath id="brittle-lockup-glyph-lower">
+        <rect x="0" y="42" width="80" height="38" />
+      </clipPath>
+    </defs>
+    <text x="40" y="58" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="64" letter-spacing="-3" fill="currentColor" clip-path="url(#brittle-lockup-glyph-upper)">b</text>
+    <text x="43" y="58" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="64" letter-spacing="-3" fill="currentColor" clip-path="url(#brittle-lockup-glyph-lower)">b</text>
+    <rect x="6" y="39" width="68" height="2" fill="#E8893B" />
+  </svg>
+  <!-- "brittle" wordmark: same offset / crack structure as the glyph,
+       scaled to align with it at h-full. -->
+  <svg x="115" y="0" width="260" height="90" viewBox="0 0 260 90" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <clipPath id="brittle-lockup-word-upper">
+        <rect x="-20" y="0" width="300" height="43" />
+      </clipPath>
+      <clipPath id="brittle-lockup-word-lower">
+        <rect x="-20" y="47" width="300" height="60" />
+      </clipPath>
+    </defs>
+    <text x="0" y="69" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="80" letter-spacing="-4" fill="currentColor" clip-path="url(#brittle-lockup-word-upper)">brittle</text>
+    <text x="4" y="73" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="80" letter-spacing="-4" fill="currentColor" clip-path="url(#brittle-lockup-word-lower)">brittle</text>
+    <rect x="2" y="44" width="210" height="2" fill="#E8893B" transform="rotate(-1 107 45)" />
+  </svg>
+</svg>
