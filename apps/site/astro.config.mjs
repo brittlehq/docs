@@ -38,9 +38,14 @@ export default defineConfig({
       logo: {
         // Lockup (cracked-b glyph + "brittle" wordmark) generated from the
         // home page's Logo.astro 1:1, written out as a static SVG so
-        // Starlight can pick it up here. `replacesTitle: true` swaps out
-        // the default "Brittle Docs" text — the wordmark already says it.
-        src: './public/brittle-logo.svg',
+        // Starlight can pick it up here. Two variants: dark fill for the
+        // light theme, light fill for the dark theme. The SVGs are
+        // loaded via <img>, which isolates them from page CSS, so
+        // `currentColor` wouldn't work — the fill has to be baked in
+        // per-variant. `replacesTitle: true` drops the default "Brittle
+        // Docs" text since the wordmark already says it.
+        light: './public/brittle-logo-light.svg',
+        dark: './public/brittle-logo-dark.svg',
         alt: 'Brittle',
         replacesTitle: true,
       },

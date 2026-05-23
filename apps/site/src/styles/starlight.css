@@ -27,3 +27,14 @@
      places rapide uses the accent. Mirror them so green→amber sticks. */
   --sl-color-text-accent: #e8893b;
 }
+
+/* Constrain the header lockup to about the same visual height as the
+   nav text. Starlight's default lets logos run as tall as the header
+   itself, which makes the wordmark feel oversized next to the menu
+   items. 1.5rem matches what the marketing site nav uses (h-7 ≈
+   1.75rem rendered, but the wordmark sits lower in its own viewBox so
+   1.5rem here lands at the same optical size). */
+.site-title img {
+  max-height: 1.5rem;
+  width: auto;
+}
