@@ -1,0 +1,88 @@
+---
+title: Vitest reporter
+description: Wire @brittlehq/vitest-reporter into an existing Vitest project.
+---
+
+`@brittlehq/vitest-reporter` plugs into Vitest's reporter API. It
+runs in-process with the test runner, posts per-test results as the
+suite executes, and reports the final outcome when the run ends.
+
+## Install
+
+```bash
+pnpm add -D @brittlehq/vitest-reporter
+```
+
+## Configure
+
+Add the reporter to `vitest.config.ts`:
+
+```ts title="vitest.config.ts" ins={2-3,7-12}
+import { defineConfig } from 'vitest/config';
+import BrittleReporter from '@brittlehq/vitest-reporter';
+
+export default defineConfig({
+  test: {
+    reporters: [
+      'default',
+      new BrittleReporter({
+        url: process.env.BRITTLE_URL,
+        token: process.env.BRITTLE_TOKEN,
+      }),
+    ],
+  },
+});
+```
+
+Note the `new` — Vitest's reporter API takes class instances rather
+than `[name, options]` tuples like Playwright/Jest. The other
+framework patterns won't compile here.
+
+## Run
+
+```bash
+export BRITTLE_URL=https://brittle.dev
+export BRITTLE_TOKEN=brt_svc_xxxxxxxxxxxxxxxx
+pnpm exec vitest run
+```
+
+Use `vitest run` (one-shot) rather than `vitest` (watch mode); the
+reporter does fire in watch mode too but each save creates a new
+Run row.
+
+## What gets captured
+
+- Test result (pass / fail / skipped / todo) and duration.
+- Failure assertion text + stack trace.
+- Test environment name (`node` / `jsdom` / `happy-dom`).
+- The full suite chain (file → describe → test) so the dashboard
+  shows the breadcrumb, not just the leaf.
+- Git commit + branch context, auto-detected.
+
+## Suite model
+
+Nested `describe()` blocks render as a breadcrumb on the Session
+Detail page: *math › positive numbers › adds two positive numbers*.
+
+## Common stumbles
+
+- **`vite.config.ts` vs `vitest.config.ts`.** If you have a single
+  shared config, configure the reporter under the `test:` block —
+  that's the only place Vitest reads `reporters` from.
+- **In-source tests.** Vitest's in-source test mode (
+  `if (import.meta.vitest)`) is supported; the reporter sees them as
+  normal tests with the source file as their location.
+- **Worker pool config (`pool: 'forks' | 'threads'`)** — both behave
+  identically. One Run row per `vitest run`.
+
+## Options
+
+Vitest's reporter accepts every [shared option](/docs/reporter/configuration#shared-options).
+It has no Vitest-specific options.
+
+## Next steps
+
+- [Configuration reference](/docs/reporter/configuration) — every
+  option, type, and default.
+- [Reporter overview](/docs/reporter/overview) — concepts that apply
+  to every framework.

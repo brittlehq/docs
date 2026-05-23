@@ -1,0 +1,104 @@
+---
+title: Reporter overview
+description: Concepts that apply across every Brittle reporter — tokens, env vars, run grouping, what gets captured.
+---
+
+Brittle ships one reporter package per supported framework:
+
+| Framework      | Package                          |
+| -------------- | -------------------------------- |
+| Playwright     | `@brittlehq/playwright-reporter` |
+| WebdriverIO    | `@brittlehq/wdio-reporter`       |
+| Jest           | `@brittlehq/jest-reporter`       |
+| Vitest         | `@brittlehq/vitest-reporter`     |
+
+All four share the same options. Per-framework pages cover wiring;
+this one covers what's common.
+
+## What every reporter sends
+
+As each test finishes the reporter posts:
+
+- The test name and full title chain (file → describe blocks → test).
+- Pass / fail / skipped outcome, plus duration.
+- Any failure messages, stack traces, and per-attempt history (for
+  retries).
+- Whatever attachments the framework captured — Playwright trace,
+  Playwright/WDIO video, Jest snapshots, etc.
+- Per-test annotations and tags, if your framework supports them.
+
+Sessions stream to the dashboard live; you don't wait for the whole
+suite.
+
+## Run grouping
+
+Multiple test workers, multiple shards, multiple CI jobs — they all
+need to converge on one **Run** row on the dashboard. The reporter
+handles this via a shared `runName`:
+
+- Set `runName` explicitly in your reporter config, *or*
+- Set the `BRITTLE_RUN_NAME` env var, *or*
+- Let the reporter detect your CI provider's build ID
+  (`GITHUB_RUN_ID`, `BUILDKITE_BUILD_ID`, `CI_PIPELINE_ID`, etc.).
+
+In CI, auto-detection is usually all you need. Locally, you can leave
+it unset — parallel workers spawned by the same test runner converge
+on one row.
+
+## Authentication
+
+Every reporter needs two values to talk to the hub:
+
+| Value           | Source                                            |
+| --------------- | ------------------------------------------------- |
+| **Hub URL**     | `url` option *or* `BRITTLE_URL` env var.          |
+| **Project token** | `token` option *or* `BRITTLE_TOKEN` env var.    |
+
+Mint the token from **Manage → Projects → [your project] → Tokens**.
+The default scopes (`session:create`, `session:control`,
+`artifact:read`) are what every reporter needs — leave them ticked.
+
+## Git auto-detection
+
+The reporter shells out to `git` from the working directory the tests
+ran in, and posts:
+
+- `commitSha`
+- `commitMessage`
+- `commitAuthor`
+- `branch`
+- `repoUrl` (parsed from `git remote get-url origin`)
+
+Each of these is overridable explicitly in the reporter config — set
+the field directly when you want CI-provided values (`GITHUB_SHA`,
+`GITHUB_REF_NAME`) instead of git's view of the working tree. That's
+common on shallow / sparse checkouts where `git rev-parse` returns
+something unhelpful.
+
+To disable auto-detection entirely, set `detectGit: false`.
+
+## Diagnostics
+
+By default each reporter prints only warnings (missing token, failed
+upload). For verbose per-test logging:
+
+```bash
+export BRITTLE_DEBUG=1
+```
+
+Useful when triaging "the run finished but nothing shows up on the
+dashboard." Safe to leave on in CI if you want richer logs.
+
+## Per-framework pages
+
+Each one is short — a copy-pasteable config block and the framework's
+quirks (Playwright's `runMetadata` shape, WDIO's worker-per-spec
+model, Jest/Vitest snapshot capture).
+
+- [Playwright](/docs/reporter/playwright)
+- [WebdriverIO](/docs/reporter/wdio)
+- [Jest](/docs/reporter/jest)
+- [Vitest](/docs/reporter/vitest)
+
+For the full table of every option the reporters accept,
+see [Configuration](/docs/reporter/configuration).

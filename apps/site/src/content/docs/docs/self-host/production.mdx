@@ -1,0 +1,136 @@
+---
+title: Production notes
+description: TLS, S3 artifacts, secret rotation, backups, and upgrades for a Brittle hub running outside a laptop.
+---
+
+The [Installation](/docs/installation) compose stack is fine for personal
+use and small teams. Production deployments — anything with a real
+domain, real users, or compliance obligations — want a few more
+considerations on top. This page covers them.
+
+## TLS via Caddy
+
+Caddy auto-provisions Let's Encrypt certificates for any real
+hostname. In the compose file's caddyfile config, swap the local
+`:80` block for your domain:
+
+```caddyfile
+brittle.example.com {
+  reverse_proxy brittle:3100
+}
+```
+
+Then expose ports 80 and 443 on the host (instead of just 3100):
+
+```yaml
+caddy:
+  ports:
+    - '80:80'
+    - '443:443'
+```
+
+That's it — Caddy fetches a cert on first start. Ports 80 and 443
+need to be reachable from the public internet.
+
+## S3 artifact storage
+
+The local volume is fine for a single VM. For anything multi-replica,
+or for setups where artifact bytes need to outlive the Hub container,
+switch to S3:
+
+```yaml
+artifacts:
+  store: s3://brittle-prod-artifacts/main
+  s3:
+    region: us-east-1
+    accessKeyId: ${AWS_ACCESS_KEY_ID}
+    secretAccessKey: ${AWS_SECRET_ACCESS_KEY}
+```
+
+For non-AWS providers:
+
+- **Cloudflare R2** — set `endpoint`,
+  `forcePathStyle: true`.
+- **MinIO** — set `endpoint`, `forcePathStyle: true`.
+- **GCS in S3-compat mode** — set `endpoint`,
+  `forcePathStyle: false`.
+
+Plan egress capacity on your S3 provider — the Hub doesn't proxy
+artifact bytes; reporters and the dashboard hit the bucket directly.
+
+## Secrets
+
+Three secrets the Hub needs:
+
+| Secret                  | Generate with                | Rotation                                                                 |
+| ----------------------- | ---------------------------- | ------------------------------------------------------------------------ |
+| `JWT_SECRET`            | `openssl rand -hex 32`        | Swap value + restart Hub. Existing session cookies invalidate.           |
+| `BRITTLE_AI_SECRET_KEY` | `openssl rand -hex 32`        | **Don't rotate** — per-org AI keys in the DB are encrypted with this. Re-encryption tooling not yet shipped. |
+| `DATABASE_URL` password | Postgres `ALTER USER ...`    | Swap value + restart Hub. Active connections drop and re-establish.      |
+
+Project tokens (the ones reporters use) rotate from the dashboard.
+Revoke by minting new + deleting old.
+
+## Backups
+
+Two things to back up:
+
+1. **Postgres.** Standard `pg_dump` works fine; restore with
+   `pg_restore`.
+2. **Artifact bytes.** If you're on the local volume, snapshot the
+   volume. If you're on S3, enable bucket versioning + lifecycle
+   policy for cold storage. The DB references artifacts by path /
+   key, so restoring the DB without the matching artifacts gives you
+   a dashboard with broken video/trace links.
+
+A reasonable starting cadence is daily Postgres dumps, weekly
+artifact snapshots, retain for 30 days. Adjust based on how much
+session history you want to keep recoverable.
+
+## Upgrades
+
+The Hub image is published at:
+
+- `ghcr.io/brittlehq/brittle:0.1.2` — pinned exact version.
+- `ghcr.io/brittlehq/brittle:0.1` — latest patch of 0.1.x.
+- `ghcr.io/brittlehq/brittle:latest` — moves with every release.
+
+For production, pin to a specific version (`0.1.2` etc.) — `:latest`
+is fine for the local stack but a bad idea for a production
+deployment because surprise upgrades happen on every `docker compose
+pull`.
+
+To upgrade:
+
+```bash
+docker compose pull brittle
+docker compose up -d
+```
+
+Migrations are backwards-compatible within a minor version; you can
+roll back if needed.
+
+Read the release notes before upgrading across a minor — they're at
+[github.com/brittlehq/brittle/releases](https://github.com/brittlehq/brittle/releases).
+
+## Monitoring
+
+The Hub exposes one internal endpoint useful for monitoring:
+
+- `GET /health` — returns 200 if Postgres is reachable and migrations
+  are caught up. No auth required.
+
+For deeper visibility (queue depth, AI job status), the
+`/api/internal/*` endpoints are bearer-token-gated. Set
+`internal.token` in the config to enable them; leave it unset to keep
+them returning 503.
+
+Logs go to stdout in JSON (pino format). Aggregate them with
+whatever you already have — Loki, Datadog, CloudWatch.
+
+## Next steps
+
+- [Hub configuration](/docs/self-host/configuration) — every field
+  + env var.
+- [Self-host overview](/docs/self-host/overview) — the deployment
+  shape.

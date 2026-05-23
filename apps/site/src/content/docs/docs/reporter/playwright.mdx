@@ -1,0 +1,117 @@
+---
+title: Playwright reporter
+description: Wire @brittlehq/playwright-reporter into an existing Playwright project.
+---
+
+`@brittlehq/playwright-reporter` plugs into Playwright's reporter
+slot. It runs in-process with the test runner, posts one result per
+test, and forwards the framework's native artifacts (trace, video,
+HAR) unchanged.
+
+## Install
+
+```bash
+pnpm add -D @brittlehq/playwright-reporter
+```
+
+## Configure
+
+Add the reporter to `playwright.config.ts` alongside whatever you
+already use:
+
+```ts title="playwright.config.ts" ins={6-9}
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  reporter: [
+    ['list'],
+    ['@brittlehq/playwright-reporter', {
+      url: process.env.BRITTLE_URL,
+      token: process.env.BRITTLE_TOKEN,
+    }],
+  ],
+});
+```
+
+Brittle's reporter runs in parallel with `list` / `html` / `dot` —
+none of them interact. You don't need to drop your existing
+reporters.
+
+## Run
+
+```bash
+export BRITTLE_URL=https://brittle.dev
+export BRITTLE_TOKEN=brt_svc_xxxxxxxxxxxxxxxx
+pnpm exec playwright test
+```
+
+Open the dashboard while the run is in flight; sessions arrive as
+each test finishes.
+
+## What gets captured
+
+- Test result (pass / fail / skipped / timed-out / flaky).
+- Full retry history — every attempt is its own row.
+- Playwright trace (when `trace: 'on'` or `'retain-on-failure'`).
+- Video (when `video: 'on'` or `'retain-on-failure'`).
+- HAR (when configured via `contextOptions`).
+- All `test.info().annotations` (owner, severity, issue links).
+- `test.tag()` values, attached to each session.
+- Per-attempt screenshots from `expect(...).toHaveScreenshot()`.
+
+The reporter doesn't enable any of these for you — they remain
+controlled by `playwright.config.ts`. Whatever Playwright would have
+written to `test-results/` on a local run is what arrives on the hub.
+
+## Playwright-specific options
+
+In addition to the [shared options](/docs/reporter/configuration#shared-options),
+the Playwright reporter accepts:
+
+| Option         | Type                                    | Default                       | Notes |
+| -------------- | --------------------------------------- | ----------------------------- | ----- |
+| `runMetadata`  | `RunUpsertRequest`                      | `{}`                          | Free-form run-level metadata (branch, commit, target). Overrides git auto-detection. |
+| `browser`      | `'chromium' \| 'firefox' \| 'webkit'`   | auto-detected per project     | The browser identifier stamped on each session. Defaults to the project's `use.browserName`. |
+
+```ts
+['@brittlehq/playwright-reporter', {
+  url: process.env.BRITTLE_URL,
+  token: process.env.BRITTLE_TOKEN,
+  runMetadata: {
+    branch: process.env.GITHUB_REF_NAME,
+    commitSha: process.env.GITHUB_SHA,
+    target: 'staging',
+  },
+  tags: ['nightly', 'smoke'],
+}],
+```
+
+## Sharding & parallel workers
+
+With `--workers=N` or `--shard=1/4`, each process has its own
+reporter. To converge them onto one Run row:
+
+1. **Auto-detect.** In CI, the reporter picks up your CI's build ID
+   automatically. No config needed.
+2. **Explicit.** Set `runName` in your reporter config (or
+   `BRITTLE_RUN_NAME` in env) to a value that's stable across all
+   shards. E.g. `BRITTLE_RUN_NAME=${GITHUB_RUN_ID}-pw`.
+
+Set `runMetadata` (branch, commit, tags) consistently across workers
+so they don't disagree.
+
+## Common stumbles
+
+- **`testInfo.attach()` for arbitrary blobs** ships as session
+  artifacts. They land on the Session Detail page's *Artifacts* tab,
+  alphabetically by `name`.
+- **No per-test logs by default.** Set `BRITTLE_DEBUG=1` to see
+  every post the reporter makes; otherwise only warnings reach
+  stderr.
+
+## Next steps
+
+- [Configuration reference](/docs/reporter/configuration) — every
+  option, type, and default.
+- [Reporter overview](/docs/reporter/overview) — concepts that apply
+  to every framework.

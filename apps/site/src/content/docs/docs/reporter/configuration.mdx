@@ -1,63 +1,132 @@
 ---
-title: Reporter configuration
-description: Every option @brittlehq/playwright-reporter accepts.
+title: Configuration reference
+description: Every option each Brittle reporter accepts, plus the env-var equivalents.
 ---
 
-The reporter is configured inline in `playwright.config.ts`. Most setups
-only need `hubUrl` and `token`; the rest are escape hatches for CI shape
-and metadata you want to attach to a run.
+This is the full table. The per-framework pages
+([Playwright](/docs/reporter/playwright),
+[WebdriverIO](/docs/reporter/wdio),
+[Jest](/docs/reporter/jest),
+[Vitest](/docs/reporter/vitest))
+walk through the wiring; this page is what you read when you want to
+know what every knob does.
 
-## Required
+## Shared options
 
-| Option   | Type   | Description                                                 |
-| -------- | ------ | ----------------------------------------------------------- |
-| `hubUrl` | string | URL of your Brittle hub. e.g. `https://brittle.dev`.        |
-| `token`  | string | Project service token. Mint under Settings → Tokens.        |
+Every reporter accepts these.
 
-Both can be passed inline or via env (`BRITTLE_HUB_URL`,
-`BRITTLE_TOKEN`). Env wins, which is what you want from CI.
+### Required
 
-## Run identity
+| Option  | Type   | Env equivalent  | Description                                                                                  |
+| ------- | ------ | --------------- | -------------------------------------------------------------------------------------------- |
+| `url`   | string | `BRITTLE_URL`   | URL of your Brittle hub, e.g. `https://brittle.dev` or `http://localhost:3100`. Trailing slashes are stripped. |
+| `token` | string | `BRITTLE_TOKEN` | Project token. Mint from **Manage → Projects → [your project] → Tokens**.                    |
 
-| Option         | Type    | Default                  | Description                                                                 |
-| -------------- | ------- | ------------------------ | --------------------------------------------------------------------------- |
-| `runName`      | string  | timestamp                | Display name on the Runs page.                                              |
-| `tags`         | array   | `[]`                     | Run-level tags. Comma-separated env: `BRITTLE_RUN_TAGS=nightly,wiki`.       |
-| `runMetadata`  | object  | `{}`                     | Free-form key/value pairs attached to the run. Branch, commit, PR url, etc. |
-| `detectGit`    | boolean | `true`                   | Auto-detect git context from the local repo. Disable for ephemeral CI.      |
+Pass inline or via env vars; env wins (handy in CI).
+
+### Run grouping
+
+| Option           | Type     | Default                          | Description                                                                                       |
+| ---------------- | -------- | -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `runName`        | string   | CI build ID → `run-{ppid}-{date}` | The key used to converge parallel workers / shards onto one Run row. Falls back to `BRITTLE_RUN_NAME` then the CI build ID. |
+| `target`         | string   | —                                | Deployment label for separate-repo flows (`"prod"`, `"staging"`, `"app@1.42.0"`). Empty for same-repo flows. |
+| `tags`           | string[] | `[]`                             | Run-level tags shown on the Runs page.                                                            |
+
+### Git context
+
+Each of these has an explicit option *and* an env-var fallback. The
+reporter auto-detects all of them from `git` unless you set
+`detectGit: false`.
+
+| Option          | Type    | Description                                                                                  |
+| --------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `branch`        | string  | Branch the run is on. Falls back to `git symbolic-ref`.                                      |
+| `commitSha`     | string  | Commit SHA. Falls back to `git rev-parse HEAD`.                                              |
+| `commitMessage` | string  | Subject line of the commit. Falls back to `git log -1 --format=%s`.                          |
+| `commitAuthor`  | string  | Commit author name + email. Falls back to `git log -1 --format=%an <%ae>`.                   |
+| `repoUrl`       | string  | Git remote URL. Falls back to `git remote get-url origin`. Used to deep-link runs to commits. |
+| `prUrl`         | string  | Pull request URL. No git auto-detection — set this from CI env if you want PR links.         |
+| `detectGit`     | boolean | Default `true`. Set to `false` on sparse / shallow / sandboxed CI where `git` isn't reliable. |
+
+In CI it's usually safer to set the values explicitly from environment
+variables your provider supplies (`GITHUB_SHA`, `GITHUB_REF_NAME`,
+`CI_COMMIT_SHA`) — they're guaranteed correct on shallow checkouts.
+
+### Behaviour
+
+| Option       | Type    | Default | Description                                                                              |
+| ------------ | ------- | ------- | ---------------------------------------------------------------------------------------- |
+| `silent`     | boolean | `false` | Suppress all reporter output. Errors still print to stderr.                              |
+| `timeoutMs`  | number  | `30000` | Per-request HTTP timeout in milliseconds. Bump for slow networks; failed requests print a warning and the next test continues. |
+
+### Diagnostic env vars
+
+| Variable        | Description                                                                                  |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| `BRITTLE_DEBUG` | Set to `1` to enable verbose per-test logging on stderr. Off by default.                     |
+| `HTTPS_PROXY`   | Standard env var — honoured for the reporter's outbound calls.                               |
+| `NO_PROXY`      | Standard env var — honoured.                                                                 |
+
+## Playwright-specific
+
+In addition to the shared options:
+
+| Option         | Type                                    | Description                                                                                  |
+| -------------- | --------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `runMetadata`  | object                                  | Free-form metadata posted at run-upsert time. Same shape as the explicit git fields above; useful for shipping CI-supplied values in one block. |
+| `browser`      | `'chromium' \| 'firefox' \| 'webkit'`   | Browser identifier stamped on each session. Defaults to the Playwright project's `use.browserName`. |
+
+## WebdriverIO-specific
+
+| Option                | Type      | Description                                                                                |
+| --------------------- | --------- | ------------------------------------------------------------------------------------------ |
+| `screenshotOnFailure` | boolean   | When `true`, calls `browser.takeScreenshot()` after a failing test and attaches the PNG.   |
+
+## Jest-specific
+
+None. Jest uses only shared options.
+
+## Vitest-specific
+
+None. Vitest uses only shared options.
+
+## Inline vs env config
+
+You can split however you want. Common patterns:
+
+**Everything from env (recommended for CI):**
+
+```ts
+['@brittlehq/playwright-reporter', {}]
+```
+
+The reporter reads `BRITTLE_URL` / `BRITTLE_TOKEN` / `BRITTLE_RUN_NAME`
+from the environment. Run with:
+
+```bash
+BRITTLE_URL=https://brittle.dev \
+BRITTLE_TOKEN=brt_svc_xxxx \
+BRITTLE_RUN_NAME="$GITHUB_RUN_ID" \
+pnpm test
+```
+
+**Inline overrides for explicit metadata:**
 
 ```ts
 ['@brittlehq/playwright-reporter', {
-  hubUrl: process.env.BRITTLE_HUB_URL,
+  url: process.env.BRITTLE_URL,
   token: process.env.BRITTLE_TOKEN,
-  runName: `Wikipedia nightly · ${new Date().toISOString().slice(0, 10)}`,
-  tags: ['nightly', 'wikipedia'],
-  runMetadata: { branch: process.env.GITHUB_REF_NAME },
+  tags: ['nightly', 'smoke'],
+  target: 'staging',
 }],
 ```
 
-## Diagnostics
+Inline options always override env. Reach for explicit only when you
+want a CI-time decision baked into the config.
 
-| Option              | Type    | Default | Description                                  |
-| ------------------- | ------- | ------- | -------------------------------------------- |
-| `silent`            | boolean | `false` | Suppress reporter warnings on stdout.        |
-| `requestTimeoutMs`  | number  | `30000` | Per-request timeout for hub HTTP calls.      |
+## Next steps
 
-## What the reporter does
-
-- Creates a `Session` row per test on `onTestBegin`.
-- POSTs the test result + attachments on `onTestEnd`.
-- Forwards `test.info().annotations` to the Session Detail page.
-- Idempotent: re-running the same `BRITTLE_BUILD_ID` updates the existing
-  run rather than creating a duplicate. Set
-  `BRITTLE_BUILD_ID=${{ github.run_id }}` in CI for clean run-vs-rerun
-  ergonomics.
-
-## Reporter-origin sessions vs grid sessions
-
-The reporter ships test results from a Playwright suite running on your
-own machine or CI runner — Brittle does not launch the browser. The
-dashboard tags these sessions as `reported`. The grid runtime (where the
-hub launches the browser via the Node executor) ships sessions tagged
-`managed`. The dashboard renders both identically; the tag is a
-debugging hint, not a feature gate.
+- [Reporter overview](/docs/reporter/overview) — what each reporter
+  does and how they group runs.
+- [Quickstart](/docs/quickstart) — the shortest path from zero to a
+  visible run.

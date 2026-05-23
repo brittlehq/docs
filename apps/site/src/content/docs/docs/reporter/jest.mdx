@@ -1,0 +1,83 @@
+---
+title: Jest reporter
+description: Wire @brittlehq/jest-reporter into an existing Jest project.
+---
+
+`@brittlehq/jest-reporter` plugs into Jest's reporter slot. Results
+stream to the hub one spec file at a time — the dashboard fills in
+progressively rather than waiting for the whole suite to finish.
+
+## Install
+
+```bash
+pnpm add -D @brittlehq/jest-reporter
+```
+
+## Configure
+
+Add the reporter to `jest.config.js` (or `jest.config.ts`):
+
+```js title="jest.config.js" ins={2-9}
+module.exports = {
+  reporters: [
+    'default',
+    [
+      '@brittlehq/jest-reporter',
+      {
+        url: process.env.BRITTLE_URL,
+        token: process.env.BRITTLE_TOKEN,
+      },
+    ],
+  ],
+};
+```
+
+`'default'` is Jest's built-in reporter that prints to stdout — keep
+it; Brittle's reporter sits next to it without interaction.
+
+## Run
+
+```bash
+export BRITTLE_URL=https://brittle.dev
+export BRITTLE_TOKEN=brt_svc_xxxxxxxxxxxxxxxx
+pnpm test
+```
+
+## What gets captured
+
+- Test result (pass / fail / skipped / todo) plus duration.
+- Full error message + stack trace for any failure.
+- Test environment name (`node` / `jsdom`) — extracted from Jest's
+  `testEnvironment` config and shown on the Session Detail page.
+- The suite path (file + describe-block titles) so the dashboard
+  shows the full breadcrumb, not just the leaf test name.
+- Git commit + branch context, auto-detected.
+
+## Streaming model
+
+Results stream per-file as Jest finishes them, so triage can start
+mid-run on long suites.
+
+## Common stumbles
+
+- **Snapshot diffs are diff-only, not before/after.** Brittle stores
+  the assertion's error message (which Jest already includes the
+  `-Expected/+Received` diff in). The actual snapshot file lives in
+  your repo; the reporter doesn't upload it.
+- **`testRegex` vs `testMatch` matters.** The reporter only knows
+  about tests Jest actually executed. If your config excludes a
+  file, Brittle never sees it.
+- **`--maxWorkers` doesn't split runs** — always one Run row per
+  `jest` invocation.
+
+## Options
+
+Jest's reporter accepts every [shared option](/docs/reporter/configuration#shared-options).
+It has no Jest-specific options.
+
+## Next steps
+
+- [Configuration reference](/docs/reporter/configuration) — every
+  option, type, and default.
+- [Reporter overview](/docs/reporter/overview) — concepts that apply
+  to every framework.

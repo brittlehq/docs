@@ -1,70 +1,45 @@
 ---
 title: Self-host overview
-description: The moving parts of a Brittle deployment and what each container does.
+description: The moving parts of a Brittle deployment and what each piece is responsible for.
 ---
 
-A Brittle deployment is one Postgres + one (or more) Hub container. That
-is the whole baseline. Everything else — node executors, S3 artifact
-storage, multi-replica Hub — is opt-in.
+A Brittle deployment is the Hub container, Postgres, and an artifact
+store (local volume in dev; S3/R2 in prod).
 
-## The minimum viable stack
+## What's required vs optional
 
-```
-┌──────────────┐       ┌──────────────┐
-│   Postgres   │ ◄─────│  Brittle Hub │
-└──────────────┘       │              │
-                       │  · API       │
-                       │  · Dashboard │
-                       │  · /control  │
-                       │  · /tunnel   │
-                       └──────────────┘
-```
+| Component        | Required? | Notes                                                                       |
+| ---------------- | --------- | --------------------------------------------------------------------------- |
+| Hub container    | Yes       | `ghcr.io/brittlehq/brittle:latest`. The only image you need to pull.        |
+| Postgres         | Yes       | Version 14+. Single instance is fine; bring your own or use the compose-supplied one. |
+| Local volume     | Default   | For artifact bytes. Survives `docker compose down`; dropped on `down -v`.   |
+| S3 / R2 bucket   | Optional  | Swap-in for the local volume when you need shared storage across replicas or a CDN-fronted artifact path. |
+| Caddy / reverse proxy | Optional | For TLS termination and a clean public domain. The example stack ships one. |
 
-- **Postgres**: the only required external dependency. Holds projects,
-  runs, sessions, test cases, artifacts, and the flake-classifier ring
-  buffer.
-- **Hub**: Fastify app that serves the dashboard, the REST API, the
-  Socket.IO control plane, and the WebSocket data plane. The reporter
-  talks to this. The Node executor talks to this. The dashboard talks
-  to this.
+## What you don't need
 
-Artifacts (videos, traces, screenshots) land on the Hub's local
-filesystem by default. Flip one config flag to push them to S3 instead.
+A few things you might assume are in the stack but aren't:
 
-## What you do not need
+- **Redis.** Not used today.
+- **A separate worker process.** Everything runs inside the Hub
+  container.
+- **An external auth provider.** Local email/password is built in.
+  SSO / OAuth are on the roadmap.
 
-Brittle was designed for the smallest sensible operational footprint.
-You do not need:
+## Two deployment shapes
 
-- Redis (unless you are running multi-replica Hub).
-- A separate API + worker process. The Hub is a single binary.
-- A separate auth provider. Local email/password + JWT cookies are
-  built in. SSO/OAuth land on the `AuthProvider` interface when you need
-  them.
+In rough order of effort:
 
-## Add a Node executor (optional)
+1. **[Installation](/docs/installation)** — local Docker Compose. The
+   canonical few-minute setup.
+2. **[Production notes](/docs/self-host/production)** — TLS, real
+   domain, S3 artifacts, backups, upgrades.
 
-If you want the Hub to launch browsers for you (the "grid" half of the
-product), add one or more **Node executors**. A Node is a container that
-exposes either:
+## Next steps
 
-- `host` mode — `playwright-core.launchServer()` directly on the host;
-  fast, no isolation between sessions.
-- `docker` mode — fresh container per session; clean isolation, slower
-  startup.
-
-The Hub schedules incoming `chromium.connect()` requests onto available
-Node slots. Reporter-origin sessions (your local Playwright runs)
-bypass the Node executor entirely.
-
-## Multi-replica Hub (optional)
-
-For high-throughput shops. Requires:
-
-- Redis for the event bus.
-- A shared artifact store (S3).
-- `hubTunnelUrl` set per-pod so node sessions pin to the replica that
-  owns them.
-
-See the Helm chart in [github.com/brittlehq/brittle](https://github.com/brittlehq/brittle)
-for the canonical deployment shape.
+- [Installation](/docs/installation) — bring the stack up on your
+  laptop.
+- [Hub configuration](/docs/self-host/configuration) — every config
+  field and env var the Hub accepts.
+- [Production notes](/docs/self-host/production) — TLS, S3,
+  backups, upgrades.

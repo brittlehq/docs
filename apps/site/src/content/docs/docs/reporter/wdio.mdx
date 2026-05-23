@@ -1,0 +1,89 @@
+---
+title: WebdriverIO reporter
+description: Wire @brittlehq/wdio-reporter into an existing WebdriverIO project.
+---
+
+`@brittlehq/wdio-reporter` plugs into WebdriverIO's reporter slot. It
+captures WebDriver commands as they execute, optionally takes a
+screenshot on failure, and posts one result per test to the hub as
+each spec finishes.
+
+## Install
+
+```bash
+pnpm add -D @brittlehq/wdio-reporter
+```
+
+## Configure
+
+Add the reporter to `wdio.conf.ts`:
+
+```ts title="wdio.conf.ts" ins={5-12}
+import BrittleReporter from '@brittlehq/wdio-reporter';
+
+export const config = {
+  reporters: [
+    'spec',
+    [
+      BrittleReporter,
+      {
+        url: process.env.BRITTLE_URL,
+        token: process.env.BRITTLE_TOKEN,
+        screenshotOnFailure: true,
+      },
+    ],
+  ],
+};
+```
+
+The reporter subscribes directly to the worker's `browser` object —
+no separate service entry is needed.
+
+## Run
+
+```bash
+export BRITTLE_URL=https://brittle.dev
+export BRITTLE_TOKEN=brt_svc_xxxxxxxxxxxxxxxx
+pnpm exec wdio run wdio.conf.ts
+```
+
+## What gets captured
+
+- Test result (pass / fail / skipped) plus duration.
+- Full WebDriver command log: every navigate, click, find, type,
+  script execution, and assertion the test issued. Polling loops
+  (waitUntil, waitForDisplayed) collapse into group rows so the
+  timeline stays readable.
+- Screenshot on failure when `screenshotOnFailure: true`.
+- The git commit, branch, and CI provider context.
+
+## WDIO-specific options
+
+In addition to the [shared options](/docs/reporter/configuration#shared-options):
+
+| Option                 | Type      | Default | Notes |
+| ---------------------- | --------- | ------- | ----- |
+| `screenshotOnFailure`  | `boolean` | `false` | Calls `browser.takeScreenshot()` after a failed test and attaches the PNG to the rich command log. |
+
+## Worker model
+
+WebdriverIO spawns one worker per spec; the reporter automatically
+converges them onto one Run row. For sharded runs across multiple
+machines, set `BRITTLE_RUN_NAME` explicitly so every machine writes
+to the same Run.
+
+## Common stumbles
+
+- **No `browser.takeScreenshot()` available in the failure hook.** If
+  your tests crash the session (driver loses connection, page hangs
+  past timeout), there's no live driver to screenshot from. The
+  reporter swallows the error and proceeds; no upload for that test.
+- **Put `spec` before the Brittle reporter** so console output
+  stays readable. Order doesn't affect correctness.
+
+## Next steps
+
+- [Configuration reference](/docs/reporter/configuration) — every
+  option, type, and default.
+- [Reporter overview](/docs/reporter/overview) — concepts that apply
+  to every framework.

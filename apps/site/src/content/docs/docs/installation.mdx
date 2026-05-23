@@ -1,0 +1,159 @@
+---
+title: Installation
+description: Get Brittle running locally with Docker Compose in about two minutes.
+---
+
+Brittle ships as a single Docker image, paired with Postgres. You'll
+have the dashboard open in your browser before the kettle boils.
+
+## Prerequisites
+
+- Docker 24 or newer, with Compose v2.23+.
+
+That's the whole list.
+
+## Step 1 — Create the Compose file
+
+Make a new directory, then save the file below as `docker-compose.yml`.
+
+```yaml title="docker-compose.yml"
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: brittle
+      POSTGRES_PASSWORD: brittle
+      POSTGRES_DB: brittle
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U brittle']
+      interval: 5s
+      retries: 5
+
+  init-artifacts:
+    image: alpine:3
+    volumes:
+      - artifacts:/data
+    command: ['sh', '-c', 'chown -R 1000:1000 /data']
+
+  brittle:
+    image: ghcr.io/brittlehq/brittle:latest
+    container_name: brittle
+    depends_on:
+      postgres:
+        condition: service_healthy
+      init-artifacts:
+        condition: service_completed_successfully
+    ports:
+      - '3100:3100'
+    configs:
+      - source: hub-config
+        target: /etc/brittle/hub.config.yaml
+    volumes:
+      - artifacts:/var/lib/brittle/artifacts
+    environment:
+      BRITTLE_CONFIG_PATH: /etc/brittle/hub.config.yaml
+      DATABASE_URL: postgresql://brittle:brittle@postgres:5432/brittle?schema=public
+      JWT_SECRET: dev-secret-change-me-to-at-least-32-characters
+      BRITTLE_AI_SECRET_KEY: dev-ai-key-change-me-at-least-16-chars
+
+volumes:
+  postgres-data:
+  artifacts:
+
+configs:
+  hub-config:
+    content: |
+      server:
+        host: 0.0.0.0
+        port: 3100
+      database:
+        url: $${DATABASE_URL}
+      auth:
+        jwtSecret: $${JWT_SECRET}
+      artifacts:
+        store: local:/var/lib/brittle/artifacts
+      redis: {}
+      session: {}
+      nodes:
+        heartbeat: {}
+      internal: {}
+      tunnel: {}
+      ai:
+        enabled: false
+```
+
+:::caution
+Replace the `JWT_SECRET` and `BRITTLE_AI_SECRET_KEY` values before
+exposing the Hub to anyone other than yourself. Generate fresh
+strings with `openssl rand -hex 32`.
+:::
+
+## Step 2 — Bring up the stack
+
+From the same directory:
+
+```bash
+docker compose up -d
+```
+
+First start takes about fifteen seconds while the Hub sets up its
+database. Check progress with:
+
+```bash
+docker compose ps
+```
+
+`brittle` and `postgres` should both show as `(healthy)`.
+
+## Step 3 — Open the dashboard
+
+```
+http://localhost:3100
+```
+
+## Step 4 — Complete the setup wizard
+
+The first time you open the dashboard, three short forms appear.
+
+**Account.** Email + password (min 8 characters). This is your admin
+login.
+
+**Organization.** Name + slug. The slug appears in URLs; pick
+something short.
+
+**Project.** Name + slug. Same idea.
+
+Click through and you'll land on the project's empty Overview page.
+
+## Step 5 — Mint a token
+
+In the left sidebar, click **Manage → Projects**, pick the project
+you just created, open the **Tokens** tab, and click **New token**.
+
+- **Kind: service** — long-lived, for CI runs.
+- **Kind: personal** — bound to your user account, for laptops.
+
+Click **Create**, then copy the token immediately. The plaintext is
+shown only once.
+
+## You're done
+
+Paste the token into your test reporter — see
+[Quickstart](/docs/quickstart) for the wiring.
+
+## Stopping and restarting
+
+```bash
+docker compose down            # stop everything, keep data
+docker compose down -v         # also wipe Postgres + artifacts
+```
+
+`down -v` is the cleanest way to replay the wizard from scratch.
+
+## Next steps
+
+- [Quickstart](/docs/quickstart) — wire results from your existing tests.
+- [Self-host overview](/docs/self-host/overview) — what's in the stack.
+- [Production notes](/docs/self-host/production) — TLS, a real domain, backups.

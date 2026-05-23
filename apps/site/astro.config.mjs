@@ -54,12 +54,19 @@ export default defineConfig({
         {
           label: 'Get started',
           items: [
+            { label: 'Introduction', link: '/docs/' },
+            { label: 'Installation', link: '/docs/installation' },
             { label: 'Quickstart', link: '/docs/quickstart' },
           ],
         },
         {
-          label: 'Reporter',
+          label: 'Reporters',
           items: [
+            { label: 'Overview', link: '/docs/reporter/overview' },
+            { label: 'Playwright', link: '/docs/reporter/playwright' },
+            { label: 'WebdriverIO', link: '/docs/reporter/wdio' },
+            { label: 'Jest', link: '/docs/reporter/jest' },
+            { label: 'Vitest', link: '/docs/reporter/vitest' },
             { label: 'Configuration', link: '/docs/reporter/configuration' },
           ],
         },
@@ -67,6 +74,8 @@ export default defineConfig({
           label: 'Self-host',
           items: [
             { label: 'Overview', link: '/docs/self-host/overview' },
+            { label: 'Hub configuration', link: '/docs/self-host/configuration' },
+            { label: 'Production notes', link: '/docs/self-host/production' },
           ],
         },
       ],
