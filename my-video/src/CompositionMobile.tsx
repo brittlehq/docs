@@ -1,10 +1,16 @@
 import { AbsoluteFill, Sequence, useVideoConfig } from "remotion";
 import "./lib/fonts"; // side-effect: load Space Grotesk + Inter + JetBrains Mono
 import { Background } from "./components/Background";
+import { BackgroundMusic } from "./components/BackgroundMusic";
 import { MobileScene, type MobileArrangement } from "./components/MobileScene";
 import { TitleCard } from "./scenes/TitleCard";
 import { EndCard } from "./scenes/EndCard";
-import { SCENES, TITLE_DURATION, END_DURATION } from "./Composition";
+import {
+  SCENES,
+  TITLE_DURATION,
+  END_DURATION,
+  totalDurationInFrames,
+} from "./Composition";
 
 /**
  * Portrait (9:16) cut of the launch demo, sized for Instagram Reels /
@@ -24,12 +30,14 @@ export const BrittleDemoMobile: React.FC = () => {
 
   const titleFrames = Math.round(TITLE_DURATION * fps);
   const endFrames = Math.round(END_DURATION * fps);
+  const total = totalDurationInFrames(fps);
 
   let cursor = titleFrames;
 
   return (
     <AbsoluteFill>
       <Background />
+      <BackgroundMusic durationInFrames={total} />
 
       <Sequence durationInFrames={titleFrames} layout="none">
         <TitleCard durationInFrames={titleFrames} />

@@ -1,6 +1,7 @@
 import { AbsoluteFill, Sequence, useVideoConfig } from "remotion";
 import "./lib/fonts"; // side-effect: load Space Grotesk + Inter + JetBrains Mono
 import { Background } from "./components/Background";
+import { BackgroundMusic } from "./components/BackgroundMusic";
 import { SplitScene, type Tilt } from "./components/SplitScene";
 import { TitleCard } from "./scenes/TitleCard";
 import { EndCard } from "./scenes/EndCard";
@@ -123,12 +124,14 @@ export const BrittleDemo: React.FC = () => {
 
   const titleFrames = Math.round(TITLE_DURATION * fps);
   const endFrames = Math.round(END_DURATION * fps);
+  const total = totalDurationInFrames(fps);
 
   let cursor = titleFrames;
 
   return (
     <AbsoluteFill>
       <Background />
+      <BackgroundMusic durationInFrames={total} />
       <Sequence durationInFrames={titleFrames} layout={"none"}>
         <TitleCard durationInFrames={titleFrames} />
       </Sequence>
