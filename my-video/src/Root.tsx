@@ -2,6 +2,7 @@ import "./index.css";
 import { Composition } from "remotion";
 import { BrittleDemo, totalDurationInFrames } from "./Composition";
 import { BrittleDemoMobile } from "./CompositionMobile";
+import { Thumbnail } from "./Thumbnail";
 
 const FPS = 30;
 
@@ -27,6 +28,16 @@ export const RemotionRoot: React.FC = () => {
         fps={FPS}
         width={1080}
         height={1920}
+      />
+      {/* Single-frame YouTube thumbnail. 1280×720 (YT standard). Render
+          with `npx remotion still Thumbnail out/thumbnail.png`. */}
+      <Composition
+        id="Thumbnail"
+        component={Thumbnail}
+        durationInFrames={1}
+        fps={FPS}
+        width={1280}
+        height={720}
       />
     </>
   );
