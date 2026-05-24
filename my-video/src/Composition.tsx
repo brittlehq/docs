@@ -24,7 +24,13 @@ import { AIClusters } from "./ui/AIClusters";
  * elevations) so the video looks like the product.
  */
 
-interface SceneSpec {
+/**
+ * Single source of truth for the scene script. The portrait
+ * (Instagram-Reels-aspect) variant in `CompositionMobile.tsx` consumes
+ * the same array so eyebrows / titles / subs / durations don't drift
+ * between the two cuts.
+ */
+export interface SceneSpec {
   side: "left" | "right";
   eyebrow: string;
   title: string;
@@ -34,7 +40,7 @@ interface SceneSpec {
   duration: number; // seconds
 }
 
-const SCENES: SceneSpec[] = [
+export const SCENES: SceneSpec[] = [
   {
     side: "left",
     eyebrow: "Self-host",
@@ -109,8 +115,8 @@ const SCENES: SceneSpec[] = [
   },
 ];
 
-const TITLE_DURATION = 3.0;
-const END_DURATION = 3.5;
+export const TITLE_DURATION = 3.0;
+export const END_DURATION = 3.5;
 
 export const BrittleDemo: React.FC = () => {
   const { fps } = useVideoConfig();
@@ -123,11 +129,9 @@ export const BrittleDemo: React.FC = () => {
   return (
     <AbsoluteFill>
       <Background />
-
-      <Sequence durationInFrames={titleFrames} layout="none">
+      <Sequence durationInFrames={titleFrames} layout={"none"}>
         <TitleCard durationInFrames={titleFrames} />
       </Sequence>
-
       {SCENES.map((scene, i) => {
         const dur = Math.round(scene.duration * fps);
         const from = cursor;
@@ -152,7 +156,6 @@ export const BrittleDemo: React.FC = () => {
           </Sequence>
         );
       })}
-
       <Sequence from={cursor} durationInFrames={endFrames} layout="none">
         <EndCard durationInFrames={endFrames} />
       </Sequence>
