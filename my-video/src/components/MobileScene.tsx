@@ -179,39 +179,27 @@ export const MobileScene: React.FC<MobileSceneProps> = ({
     </div>
   );
 
-  // Top half: ~38% of canvas. Bottom half: rest. The narrower half goes
-  // to text, wider half to UI so the mock has room.
+  // Single flex column, both children vertically centered on the canvas
+  // with a fixed gap between them. Drops the 36/64 split that was
+  // pinning the top child to its half's edge: now both arrangements
+  // (`text-top` and `ui-top`) settle visually centered top-to-bottom,
+  // with comfortable canvas margin above and below.
+  const first = arrangement === "text-top" ? textBlock : uiBlock;
+  const second = arrangement === "text-top" ? uiBlock : textBlock;
+
   return (
     <AbsoluteFill
       style={{
         opacity: exitOpacity,
         flexDirection: "column",
         justifyContent: "center",
+        alignItems: "center",
+        gap: 90,
+        padding: "120px 0",
       }}
     >
-      <div
-        style={{
-          flex: "0 0 36%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: arrangement === "text-top" ? "flex-end" : "flex-start",
-          paddingTop: arrangement === "text-top" ? 80 : 40,
-          paddingBottom: arrangement === "text-top" ? 40 : 80,
-        }}
-      >
-        {arrangement === "text-top" ? textBlock : uiBlock}
-      </div>
-      <div
-        style={{
-          flex: "1 1 auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: arrangement === "ui-top" ? "40px 0 80px" : "0 0 80px",
-        }}
-      >
-        {arrangement === "ui-top" ? textBlock : uiBlock}
-      </div>
+      {first}
+      {second}
     </AbsoluteFill>
   );
 };
