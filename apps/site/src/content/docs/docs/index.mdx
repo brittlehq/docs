@@ -47,21 +47,24 @@ Brittle deliberately stays out of a few lanes:
   whatever you have. Brittle plugs into the run; it doesn't replace
   it.
 
-## The shape of the install
+## Install it
 
-One Docker image runs the API + dashboard. Postgres holds metadata;
-artifacts live on a local volume (dev) or S3/R2 (prod). A wizard sets
-up admin + org + first project; mint a token, paste into your test
-config.
+```bash
+curl -fsSL https://brittle.dev/install.sh | sh
+```
+
+Open `http://localhost:3100`, finish the setup wizard, mint a token,
+paste it into your test reporter. Full walkthrough including manual
+Docker Compose at [Installation](/docs/installation).
 
 ## Where to go next
 
-- [**Installation**](/docs/installation): bring up Brittle locally
-  with Docker Compose.
-- [**Quickstart**](/docs/quickstart): add the reporter to an existing
-  suite and see your first run.
+- [**Installation**](/docs/installation): one-line install or manual
+  Docker Compose.
+- [**Reporter overview**](/docs/reporter/overview): wire results from
+  your test suite into Brittle.
 - [**Reporter configuration**](/docs/reporter/configuration): every
-  option the reporter accepts and what each one does.
+  option the reporter accepts.
 
 :::tip
 Want a sandbox with a working test suite already wired up? Clone

@@ -1,0 +1,88 @@
+---
+/**
+ * Logo wall for the four supported test runners. Sits between the code
+ * snippet and the early-access CTA: the snippet shows wiring for one
+ * framework, this section is the proof that the other three are
+ * first-class too.
+ *
+ * Each card is the framework's brand mark in its real brand color, with
+ * the runner name underneath and the reporter package as a footnote.
+ * Brand colors carry weight on a mostly-amber page, so the cards stay
+ * quiet otherwise: subtle border, surface bg, hover-lift only.
+ */
+const frameworks = [
+  {
+    name: 'Playwright',
+    pkg: '@brittlehq/playwright-reporter',
+    logo: '/logos/playwright.svg',
+  },
+  {
+    name: 'WebdriverIO',
+    pkg: '@brittlehq/wdio-reporter',
+    logo: '/logos/webdriverio.svg',
+  },
+  {
+    name: 'Jest',
+    pkg: '@brittlehq/jest-reporter',
+    logo: '/logos/jest.svg',
+  },
+  {
+    name: 'Vitest',
+    pkg: '@brittlehq/vitest-reporter',
+    logo: '/logos/vitest.svg',
+  },
+];
+---
+
+<section class="relative py-24 md:py-28" data-section="supported_frameworks">
+  <div class="container-fixed">
+    <div class="mx-auto mb-14 max-w-2xl text-center">
+      <p class="font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--color-fg-subtle)]">
+        Supported frameworks
+      </p>
+      <h2
+        class="mt-3 text-balance text-3xl tracking-tight text-[color:var(--color-fg)] sm:text-4xl"
+        style="font-family: var(--font-brand); font-weight: 700;"
+      >
+        Works with the runner you already use.
+      </h2>
+      <p class="mt-4 text-[color:var(--color-fg-muted)] leading-relaxed">
+        One reporter per framework. Three lines in your config. No agent,
+        no daemon.
+      </p>
+    </div>
+
+    <ul
+      class="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6"
+      aria-label="Supported test frameworks"
+    >
+      {frameworks.map((fw) => (
+        <li
+          class="group relative flex flex-col items-center justify-center gap-4 rounded-xl border border-[color:var(--color-border)]/70 bg-[color:var(--color-surface)]/60 px-6 py-10 backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:border-[color:var(--color-fg-subtle)] hover:bg-[color:var(--color-surface)]"
+        >
+          <img
+            src={fw.logo}
+            alt={`${fw.name} logo`}
+            class="h-12 w-12 transition-transform group-hover:scale-105"
+            loading="lazy"
+            width="48"
+            height="48"
+          />
+          <div class="flex flex-col items-center gap-1.5">
+            <span
+              class="text-base text-[color:var(--color-fg)]"
+              style="font-family: var(--font-brand); font-weight: 600;"
+            >
+              {fw.name}
+            </span>
+            <span
+              class="font-mono text-[10px] tracking-tight text-[color:var(--color-fg-subtle)]"
+            >
+              {fw.pkg}
+            </span>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

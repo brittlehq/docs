@@ -48,28 +48,47 @@ import TestGrid from './TestGrid.astro';
         Tame the <span class="glow-amber text-[color:var(--color-accent)]">flaky</span> test.
       </h1>
       <p class="mt-6 max-w-xl text-lg leading-relaxed text-[color:var(--color-fg-muted)]">
-        Self-hosted flake analytics for Playwright, WebdriverIO, Vitest and Jest. Playwright grid runtime with AI failure prediction built in.
+        Self-hosted flake analytics for Playwright, WebdriverIO, Vitest
+        and Jest. AI failure clustering, per-env rollups, and full
+        session replay built in.
       </p>
+
+      {/* One-line install: the lowest-friction CTA on the page. Reads
+          as a real terminal line so it's instantly recognisable to the
+          target audience, and the copy button skips the "select →
+          right-click → copy" tax. */}
+      <div class="mt-7 max-w-xl">
+        <div
+          class="group flex items-center gap-3 rounded-md border border-[color:var(--color-border)] bg-[color:var(--color-bg-elev)] px-4 py-3"
+        >
+          <span
+            class="font-mono text-sm text-[color:var(--color-accent)]"
+            aria-hidden="true"
+          >$</span>
+          <code
+            class="flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-[color:var(--color-fg)]"
+          >curl -fsSL https://brittle.dev/install.sh | sh</code>
+          <button
+            type="button"
+            data-copy-install="curl -fsSL https://brittle.dev/install.sh | sh"
+            data-track="install_copied"
+            data-track-props='{"source":"hero"}'
+            class="shrink-0 rounded border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.15em] text-[color:var(--color-fg-subtle)] transition-colors hover:border-[color:var(--color-accent)]/40 hover:text-[color:var(--color-accent)]"
+          >
+            Copy
+          </button>
+        </div>
+      </div>
 
       <ul
         class="mt-6 flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-[color:var(--color-fg-subtle)]"
         aria-label="Supported frameworks"
       >
-        {[
-          { label: 'Playwright', grid: true },
-          { label: 'WebdriverIO' },
-          { label: 'Vitest' },
-          { label: 'Jest' },
-        ].map((fw) => (
+        {['Playwright', 'WebdriverIO', 'Vitest', 'Jest'].map((label) => (
           <li
             class="inline-flex items-center gap-1.5 rounded border border-[color:var(--color-border)] bg-[color:var(--color-surface)] px-2 py-1"
           >
-            <span class="text-[color:var(--color-fg-muted)]">{fw.label}</span>
-            {fw.grid && (
-              <span class="rounded-sm bg-[color:var(--color-accent)]/15 px-1 py-px text-[9px] tracking-wider text-[color:var(--color-accent-soft)]">
-                +grid
-              </span>
-            )}
+            <span class="text-[color:var(--color-fg-muted)]">{label}</span>
           </li>
         ))}
       </ul>
@@ -119,3 +138,25 @@ import TestGrid from './TestGrid.astro';
     aria-hidden="true"
   ></div>
 </section>
+
+<script>
+  // Wire the hero install-line copy button. Falls back silently on
+  // browsers without clipboard permission; the visible text and the
+  // tracked event are enough signal either way.
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-install]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const cmd = btn.getAttribute('data-copy-install');
+      if (!cmd) return;
+      try {
+        await navigator.clipboard.writeText(cmd);
+        const original = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => {
+          btn.textContent = original;
+        }, 1400);
+      } catch {
+        /* clipboard blocked — leave the button text alone */
+      }
+    });
+  });
+</script>

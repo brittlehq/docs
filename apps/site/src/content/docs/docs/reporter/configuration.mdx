@@ -19,7 +19,7 @@ Every reporter accepts these.
 
 | Option  | Type   | Env equivalent  | Description                                                                                  |
 | ------- | ------ | --------------- | -------------------------------------------------------------------------------------------- |
-| `url`   | string | `BRITTLE_URL`   | URL of your Brittle hub, e.g. `https://brittle.dev` or `http://localhost:3100`. Trailing slashes are stripped. |
+| `url`   | string | `BRITTLE_URL`   | URL of your self-hosted Brittle hub, e.g. `http://localhost:3100` or `https://brittle.your-domain.com`. Trailing slashes are stripped. |
 | `token` | string | `BRITTLE_TOKEN` | Project token. Mint from **Manage → Projects → [your project] → Tokens**.                    |
 
 Pass inline or via env vars; env wins (handy in CI).
@@ -104,7 +104,7 @@ The reporter reads `BRITTLE_URL` / `BRITTLE_TOKEN` / `BRITTLE_RUN_NAME`
 from the environment. Run with:
 
 ```bash
-BRITTLE_URL=https://brittle.dev \
+BRITTLE_URL=https://brittle.your-domain.com \
 BRITTLE_TOKEN=brt_svc_xxxx \
 BRITTLE_RUN_NAME="$GITHUB_RUN_ID" \
 pnpm test
@@ -128,5 +128,5 @@ want a CI-time decision baked into the config.
 
 - [Reporter overview](/docs/reporter/overview) for what each
   reporter does and how they group runs.
-- [Quickstart](/docs/quickstart) for the shortest path from zero to
-  a visible run.
+- [Installation](/docs/installation) for the one-line install or
+  manual Docker Compose walkthrough.

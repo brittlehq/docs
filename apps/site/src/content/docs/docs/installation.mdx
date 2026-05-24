@@ -1,20 +1,27 @@
 ---
 title: Installation
-description: Get Brittle running locally with Docker Compose in about two minutes.
+description: Install Brittle locally in one command, or with Docker Compose.
 ---
 
-Brittle ships as a single Docker image, paired with Postgres. You'll
-have the dashboard open in your browser before the kettle boils.
+Brittle runs as a Docker container with Postgres. One command installs both:
 
-## Prerequisites
+```bash
+curl -fsSL https://brittle.dev/install.sh | sh
+```
 
-- Docker 24 or newer, with Compose v2.23+.
+When it's done, open `http://localhost:3100` and finish the
+[setup wizard](#setup-wizard).
 
-That's the whole list.
+## Requirements
 
-## Step 1. Create the Compose file
+- Docker 24 or newer, with Compose v2.
+- A free port. Default is `3100`.
 
-Make a new directory, then save the file below as `docker-compose.yml`.
+## Install with Docker Compose
+
+If you'd rather not pipe a script to shell, the manual flow is the
+same stack written by hand. Save the file below as
+`docker-compose.yml` in a new directory.
 
 ```yaml title="docker-compose.yml"
 services:
@@ -55,8 +62,8 @@ services:
     environment:
       BRITTLE_CONFIG_PATH: /etc/brittle/hub.config.yaml
       DATABASE_URL: postgresql://brittle:brittle@postgres:5432/brittle?schema=public
-      JWT_SECRET: dev-secret-change-me-to-at-least-32-characters
-      BRITTLE_AI_SECRET_KEY: dev-ai-key-change-me-at-least-16-chars
+      JWT_SECRET: ${JWT_SECRET}
+      BRITTLE_AI_SECRET_KEY: ${BRITTLE_AI_SECRET_KEY}
 
 volumes:
   postgres-data:
@@ -84,76 +91,94 @@ configs:
         enabled: false
 ```
 
-:::caution
-Replace the `JWT_SECRET` and `BRITTLE_AI_SECRET_KEY` values before
-exposing the Hub to anyone other than yourself. Generate fresh
-strings with `openssl rand -hex 32`.
-:::
+Generate two secrets and save them next to the Compose file:
 
-## Step 2. Bring up the stack
+```bash
+cat > .env <<EOF
+JWT_SECRET=$(openssl rand -hex 32)
+BRITTLE_AI_SECRET_KEY=$(openssl rand -hex 32)
+EOF
+chmod 600 .env
+```
 
-From the same directory:
+Then bring up the stack:
 
 ```bash
 docker compose up -d
 ```
 
-First start takes about fifteen seconds while the Hub sets up its
-database. Check progress with:
-
-```bash
-docker compose ps
-```
-
-`brittle` and `postgres` should both show as `(healthy)`.
-
-## Step 3. Open the dashboard
-
-```
-http://localhost:3100
-```
-
-## Step 4. Complete the setup wizard
+## Setup wizard
 
 The first time you open the dashboard, three short forms appear.
 
-**Account.** Email + password (min 8 characters). This is your admin
-login.
+1. **Account.** Email and password. Your admin login.
+2. **Organization.** Name and slug. The slug appears in URLs.
+3. **Project.** Name and slug.
 
-**Organization.** Name + slug. The slug appears in URLs; pick
-something short.
+## Mint a token
 
-**Project.** Name + slug. Same idea.
+From the dashboard: **Manage → Projects → your project → Tokens → New
+token**.
 
-Click through and you'll land on the project's empty Overview page.
+- `service`: long-lived. Use in CI.
+- `personal`: bound to your user. Use on a laptop.
 
-## Step 5. Mint a token
+Copy the token immediately. The plaintext is shown once.
 
-In the left sidebar, click **Manage → Projects**, pick the project
-you just created, open the **Tokens** tab, and click **New token**.
+Wire it into your suite at [Reporter overview](/docs/reporter/overview).
 
-- **Kind: service**. Long-lived, for CI runs.
-- **Kind: personal**. Bound to your user account, for laptops.
-
-Click **Create**, then copy the token immediately. The plaintext is
-shown only once.
-
-## You're done
-
-Paste the token into your test reporter. See
-[Quickstart](/docs/quickstart) for the wiring.
-
-## Stopping and restarting
+## Custom port or install directory
 
 ```bash
-docker compose down            # stop everything, keep data
-docker compose down -v         # also wipe Postgres + artifacts
+BRITTLE_PORT=4000 INSTALL_DIR=~/code/brittle \
+  sh -c "$(curl -fsSL https://brittle.dev/install.sh)"
 ```
 
-`down -v` is the cleanest way to replay the wizard from scratch.
+The chosen port is remembered. Re-running the installer reuses it.
 
-## Next steps
+## Upgrade
 
-- [Quickstart](/docs/quickstart) wires results from your existing tests.
-- [Self-host overview](/docs/self-host/overview) covers what's in the stack.
-- [Production notes](/docs/self-host/production) for TLS, a real domain, and backups.
+Re-run the installer. Your data, secrets, and port survive.
+
+```bash
+curl -fsSL https://brittle.dev/install.sh | sh
+```
+
+If you installed with Compose, pull and restart from the install
+directory:
+
+```bash
+docker compose pull && docker compose up -d
+```
+
+## Uninstall
+
+```bash
+cd ~/brittle && docker compose down -v
+```
+
+`down -v` wipes Postgres and artifacts. Delete the install directory
+to remove everything else.
+
+## Troubleshooting
+
+**Port already in use.** Re-run with `BRITTLE_PORT=4000`, or stop
+whatever's holding the port.
+
+**Docker not running.** Start Docker Desktop on macOS or Windows,
+or `sudo systemctl start docker` on Linux.
+
+**Dashboard never responds.** Tail the logs:
+
+```bash
+cd ~/brittle && docker compose logs -f brittle
+```
+
+## Next
+
+- [Reporter overview](/docs/reporter/overview): wire results from your
+  test suite into Brittle.
+- [Self-host overview](/docs/self-host/overview): what's in the stack
+  and how the pieces fit.
+- [Production notes](/docs/self-host/production): TLS, a real domain,
+  S3 artifacts, backups.
