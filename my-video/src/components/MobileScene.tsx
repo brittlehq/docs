@@ -30,10 +30,10 @@ interface MobileSceneProps {
 }
 
 // UI mocks were designed for a 1920-wide canvas (~880px max width). At
-// 1080px portrait we shrink them slightly so the rotated geometry has
-// margin to breathe, but stay close enough to native size that the
-// in-card type stays legible at thumb-distance viewing.
-const UI_SCALE = 0.92;
+// 1080px portrait we render them slightly larger than native so the
+// in-card type reads from thumb distance. The damped tilt below keeps
+// the wider geometry from clipping the canvas edges.
+const UI_SCALE = 1.05;
 
 // Portrait aspect amplifies rotateY distortion (the UI's far edge
 // foreshortens harder when the canvas is narrow). Damp the tilt
@@ -100,8 +100,10 @@ export const MobileScene: React.FC<MobileSceneProps> = ({
         display: "flex",
         flexDirection: "column",
         gap: 14,
-        padding: "0 80px",
-        alignItems: "flex-start",
+        padding: "0 64px",
+        alignItems: "center",
+        textAlign: "center",
+        width: "100%",
       }}
     >
       {eyebrow ? (
@@ -146,6 +148,7 @@ export const MobileScene: React.FC<MobileSceneProps> = ({
             color: C.fgMuted,
             opacity: subOpacity,
             transform: `translateY(${subY}px)`,
+            maxWidth: 880,
           }}
         >
           {sub}
@@ -183,25 +186,28 @@ export const MobileScene: React.FC<MobileSceneProps> = ({
       style={{
         opacity: exitOpacity,
         flexDirection: "column",
+        justifyContent: "center",
       }}
     >
       <div
         style={{
-          flex: arrangement === "text-top" ? "0 0 38%" : "1 1 auto",
+          flex: "0 0 36%",
           display: "flex",
-          alignItems: arrangement === "text-top" ? "flex-end" : "center",
-          paddingBottom: arrangement === "text-top" ? 0 : 0,
-          paddingTop: arrangement === "text-top" ? 80 : 0,
+          justifyContent: "center",
+          alignItems: arrangement === "text-top" ? "flex-end" : "flex-start",
+          paddingTop: arrangement === "text-top" ? 80 : 40,
+          paddingBottom: arrangement === "text-top" ? 40 : 80,
         }}
       >
         {arrangement === "text-top" ? textBlock : uiBlock}
       </div>
       <div
         style={{
-          flex: arrangement === "ui-top" ? "0 0 38%" : "1 1 auto",
+          flex: "1 1 auto",
           display: "flex",
-          alignItems: arrangement === "ui-top" ? "flex-start" : "center",
-          paddingTop: arrangement === "ui-top" ? 60 : 0,
+          justifyContent: "center",
+          alignItems: "center",
+          padding: arrangement === "ui-top" ? "40px 0 80px" : "0 0 80px",
         }}
       >
         {arrangement === "ui-top" ? textBlock : uiBlock}
