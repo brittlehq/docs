@@ -139,6 +139,52 @@ export const Thumbnail: React.FC = () => {
         </div>
       </div>
 
+      {/* Center play button. Sits absolutely over the whole canvas so
+          a reader scanning a YouTube grid (or a README thumbnail link)
+          instantly registers this as a clickable video. Semi-opaque
+          dark circle with a thick white border + amber-tinted shadow
+          carries the brand into the affordance. */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: 124,
+          height: 124,
+          borderRadius: 999,
+          background: "rgba(10, 10, 12, 0.6)",
+          backdropFilter: "blur(10px)",
+          border: "3px solid rgba(255, 255, 255, 0.9)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          boxShadow: `
+            0 24px 60px rgba(0, 0, 0, 0.6),
+            0 0 0 8px rgba(232, 137, 59, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18)
+          `,
+          zIndex: 4,
+        }}
+      >
+        <svg
+          width="42"
+          height="46"
+          viewBox="0 0 42 46"
+          fill="white"
+          aria-hidden="true"
+          style={{
+            // Optical centering: the triangle's visual centre sits a few
+            // pixels right of its bounding-box centre because all the
+            // mass is on the leading edge. Nudge left so the play icon
+            // looks centered inside the circle.
+            marginLeft: 6,
+          }}
+        >
+          <polygon points="2,2 40,23 2,44" />
+        </svg>
+      </div>
+
       {/* Brand stripe — logo + URL + open-source tag, all in one
           line, no rotation. Keeps the open-source flag visible
           without competing with the headline. */}
