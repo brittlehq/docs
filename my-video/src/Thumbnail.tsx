@@ -6,23 +6,16 @@ import { Logo } from "./components/Logo";
 
 /**
  * YouTube thumbnail. 1280×720 single-frame composition rendered to PNG.
- * Optimised for the YouTube grid: legible at the ~330px preview size
- * but designed to reward the click at full resolution.
  *
- * Hierarchy:
- *   1. Bold left headline catches the eye on the scroll.
- *   2. Tilted FailureRollup card on the right shows the product in
- *      one glance — colorful NEW / KNOWN / REGRESSED badges read
- *      even at 200px wide.
- *   3. Brand mark + URL bottom-left, peripheral.
+ * Layout: 56/44 horizontal split. Left column carries the eye-catch
+ * (big two-line headline + brand mark). Right column shows the
+ * product, tilted into the frame at an angle that keeps every edge of
+ * the UI card inside the canvas.
  *
- * The UI is rendered at static "mid-scene" timing by skipping the
- * stagger animations: every internal `interpolate()` lands at its
- * settled value at frame 0 since the FailureRollup's animation curves
- * clamp to 1 once their start frame is reached. We're forcing
- * `useCurrentFrame` to be high by wrapping in a sequence with from=...
- * — but easier and more legible to just use the natural mid-scene
- * frame which happens automatically when rendered as a still.
+ * Earlier iterations clipped the card off the right edge to fake a
+ * sense of scale; that hid the badges the thumbnail relies on. This
+ * version sits the card with a 40px right margin and a softer rotateY
+ * so the whole rollup reads at thumbnail size.
  */
 export const Thumbnail: React.FC = () => {
   return (
@@ -30,42 +23,42 @@ export const Thumbnail: React.FC = () => {
       style={{
         background: `
           radial-gradient(
-            circle at 75% 30%,
+            circle at 78% 30%,
             rgba(232, 137, 59, 0.32) 0%,
             rgba(232, 137, 59, 0.08) 24%,
             transparent 56%
           ),
           radial-gradient(
-            circle at 12% 80%,
-            rgba(40, 60, 140, 0.22) 0%,
-            transparent 56%
+            circle at 8% 88%,
+            rgba(40, 60, 140, 0.20) 0%,
+            transparent 55%
           ),
           #0a0a0c
         `,
         overflow: "hidden",
       }}
     >
-      {/* Subtle vignette */}
+      {/* Subtle vignette so the corners darken a touch. */}
       <AbsoluteFill
         style={{
           background:
-            "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%)",
+            "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%)",
           pointerEvents: "none",
         }}
       />
 
-      {/* LEFT — text column */}
+      {/* LEFT — text column (~56% of canvas) */}
       <div
         style={{
           position: "absolute",
-          left: 64,
+          left: 60,
           top: 0,
           bottom: 0,
           width: 660,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          gap: 18,
+          gap: 22,
           zIndex: 2,
         }}
       >
@@ -73,7 +66,7 @@ export const Thumbnail: React.FC = () => {
           style={{
             fontFamily: FONT_HEAD,
             fontWeight: 600,
-            fontSize: 19,
+            fontSize: 18,
             letterSpacing: "0.32em",
             textTransform: "uppercase",
             color: C.accent,
@@ -81,117 +74,114 @@ export const Thumbnail: React.FC = () => {
         >
           Brittle
         </div>
+
         <h1
           style={{
             margin: 0,
             fontFamily: FONT_HEAD,
             fontWeight: 700,
-            fontSize: 108,
-            lineHeight: 0.96,
+            fontSize: 92,
+            lineHeight: 0.98,
             letterSpacing: "-0.035em",
             color: C.fg,
           }}
         >
-          Every CI<br />failure,<br />
-          <span style={{ color: C.fg }}>readable</span>
+          Read your CI failures
           <span style={{ color: C.accent }}>.</span>
         </h1>
+
         <p
           style={{
-            margin: "10px 0 0",
+            margin: 0,
             fontFamily: FONT_BODY,
             fontWeight: 400,
-            fontSize: 26,
-            lineHeight: 1.35,
+            fontSize: 24,
+            lineHeight: 1.4,
             color: C.fgMuted,
-            maxWidth: 540,
+            maxWidth: 520,
           }}
         >
           Self-hosted test observability for Playwright, Jest, WDIO, Vitest.
         </p>
-
-        {/* Brand stripe at bottom — amber crack hairline + URL */}
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            bottom: 48,
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-          }}
-        >
-          <Logo height={36} />
-          <div style={{ width: 1, height: 24, background: C.border }} />
-          <span
-            style={{
-              fontFamily: FONT_HEAD,
-              fontWeight: 600,
-              fontSize: 22,
-              color: C.accent,
-              letterSpacing: "0.02em",
-            }}
-          >
-            brittle.dev
-          </span>
-        </div>
       </div>
 
-      {/* RIGHT — tilted UI card */}
+      {/* RIGHT — fully-visible tilted UI card (~44% of canvas) */}
       <div
         style={{
           position: "absolute",
-          right: -120,
+          right: 40,
           top: 0,
           bottom: 0,
-          width: 760,
+          width: 600,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          perspective: 1800,
+          justifyContent: "flex-end",
+          perspective: 2000,
           perspectiveOrigin: "center center",
+          zIndex: 1,
         }}
       >
         <div
           style={{
             transformStyle: "preserve-3d",
-            transform:
-              "rotateY(-14deg) rotateX(4deg) rotateZ(-1deg) scale(0.86)",
-            filter: "drop-shadow(0 40px 80px rgba(0,0,0,0.65))",
+            transform: "rotateY(-9deg) rotateX(3deg) scale(0.7)",
+            transformOrigin: "right center",
+            filter: "drop-shadow(0 30px 60px rgba(0,0,0,0.6))",
           }}
         >
-          {/* The FailureRollup's row + badge stagger animations live on
-              an `useCurrentFrame` clock. The thumbnail composition is
-              one frame long so without a Sequence shift those animations
-              would render at frame 0 (everything still invisible).
-              `from={-90}` advances the inner clock past the entry
-              schedule so the card renders fully settled. */}
+          {/* FailureRollup runs its row-stagger animations off
+              useCurrentFrame; in a 1-frame composition those would
+              all be at opacity 0. Advance the clock past the entry
+              schedule with from={-90}. */}
           <Sequence from={-90} layout="none">
             <FailureRollup />
           </Sequence>
         </div>
       </div>
 
-      {/* ATTENTION CALLOUT — sticker-style badge that pops over the UI */}
+      {/* Brand stripe — logo + URL + open-source tag, all in one
+          line, no rotation. Keeps the open-source flag visible
+          without competing with the headline. */}
       <div
         style={{
           position: "absolute",
-          right: 80,
-          top: 70,
-          transform: "rotate(8deg)",
-          padding: "10px 20px",
-          borderRadius: 999,
-          background: C.accent,
-          color: "#1a1410",
-          fontFamily: FONT_HEAD,
-          fontWeight: 700,
-          fontSize: 18,
-          letterSpacing: "0.1em",
-          boxShadow: `0 12px 32px rgba(232, 137, 59, 0.4), 0 0 0 6px rgba(232, 137, 59, 0.15)`,
+          left: 60,
+          bottom: 44,
+          display: "flex",
+          alignItems: "center",
+          gap: 18,
           zIndex: 3,
         }}
       >
-        OPEN SOURCE
+        <Logo height={32} />
+        <span
+          style={{
+            fontFamily: FONT_HEAD,
+            fontWeight: 600,
+            fontSize: 20,
+            color: C.accent,
+            letterSpacing: "0.02em",
+          }}
+        >
+          brittle.dev
+        </span>
+        <span style={{ width: 1, height: 18, background: C.border }} />
+        <span
+          style={{
+            padding: "4px 10px",
+            borderRadius: 6,
+            border: `1px solid ${C.accent}55`,
+            background: C.accentLow,
+            color: C.accent,
+            fontFamily: FONT_HEAD,
+            fontWeight: 600,
+            fontSize: 12,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+          }}
+        >
+          Open source
+        </span>
       </div>
     </AbsoluteFill>
   );
