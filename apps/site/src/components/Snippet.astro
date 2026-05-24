@@ -34,10 +34,7 @@
         class="mt-6 flex flex-col gap-1.5 font-mono text-[11px] text-[color:var(--color-fg-subtle)]"
         aria-label="Available adapters"
       >
-        <li>
-          <span class="text-[color:var(--color-fg-muted)]">@brittlehq/playwright-reporter</span>
-          <span class="ml-2 text-[color:var(--color-accent-soft)]">+grid</span>
-        </li>
+        <li class="text-[color:var(--color-fg-muted)]">@brittlehq/playwright-reporter</li>
         <li class="text-[color:var(--color-fg-muted)]">@brittlehq/wdio-reporter</li>
         <li class="text-[color:var(--color-fg-muted)]">@brittlehq/vitest-reporter</li>
         <li class="text-[color:var(--color-fg-muted)]">@brittlehq/jest-reporter</li>
@@ -67,7 +64,7 @@
   <span class="text-[color:var(--color-fg-subtle)]">// drop in the brittle reporter</span>
   <span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">reporter: [</span>
 <span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">    [</span><span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-accent-soft)]">'@brittlehq/playwright-reporter'</span><span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">, {'{'}</span>
-<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">      hubUrl: process.env.BRITTLE_HUB_URL,</span>
+<span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">      url: process.env.BRITTLE_URL,</span>
 <span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">      token: process.env.BRITTLE_TOKEN,</span>
 <span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">    {'}'}],</span>
 <span class="bg-[color:var(--color-accent)]/10 text-[color:var(--color-fg)]">  ],</span>
