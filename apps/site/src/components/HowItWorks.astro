@@ -21,7 +21,7 @@
       </h2>
     </div>
 
-    <div class="grid items-start gap-12 md:grid-cols-2 md:gap-20">
+    <div class="grid grid-cols-1 items-start gap-12 md:grid-cols-2 md:gap-20">
       {/* Steps */}
       <ol class="flex flex-col gap-10">
         {[
@@ -38,7 +38,7 @@
           {
             n: '03',
             title: 'Triage from the dashboard',
-            body: 'Open the run, click the failing env. AI ranks likely-flake failures before you rerun.',
+            body: 'Open the run. Failures are tagged NEW, KNOWN, or REGRESSED so you triage what changed, not what you already know.',
           },
         ].map((step) => (
           <li class="flex gap-5">

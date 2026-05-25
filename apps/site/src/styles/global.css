@@ -43,11 +43,15 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* Mobile Safari ignores body{overflow-x:hidden} when an inner
+       element overflows; mirror the rule here so the viewport stays
+       clipped no matter what the inner layout does. */
+    overflow-x: clip;
   }
 
   body {
     margin: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   ::selection {

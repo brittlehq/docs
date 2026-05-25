@@ -33,13 +33,13 @@ import TestGrid from './TestGrid.astro';
   ></div>
 
   {/* Content -------------------------------------------------------------- */}
-  <div class="container-fixed relative grid items-center gap-12 py-24 md:grid-cols-12 md:py-32">
+  <div class="container-fixed relative grid grid-cols-1 items-center gap-12 py-24 md:grid-cols-12 md:py-32">
     <div class="md:col-span-7">
       <p
         class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-[color:var(--color-accent-soft)]"
       >
         <span class="block h-1.5 w-1.5 rounded-full bg-[color:var(--color-accent)] shadow-[0_0_8px_color-mix(in_oklch,var(--color-accent)_80%,transparent)]"></span>
-        Multi-framework · AI flake prediction
+        Test observability · AI failure clustering
       </p>
       <h1
         class="mt-4 text-balance text-5xl leading-[1.05] tracking-tight text-[color:var(--color-fg)] sm:text-6xl md:text-7xl"
@@ -48,9 +48,8 @@ import TestGrid from './TestGrid.astro';
         Tame the <span class="glow-amber text-[color:var(--color-accent)]">flaky</span> test.
       </h1>
       <p class="mt-6 max-w-xl text-lg leading-relaxed text-[color:var(--color-fg-muted)]">
-        Self-hosted flake analytics for Playwright, WebdriverIO, Vitest
-        and Jest. AI failure clustering, per-env rollups, and full
-        session replay built in.
+        Self-hosted observability for your E2E tests. Test health is
+        a leading indicator of product health.
       </p>
 
       {/* One-line install: the lowest-friction CTA on the page. Reads
@@ -66,7 +65,7 @@ import TestGrid from './TestGrid.astro';
             aria-hidden="true"
           >$</span>
           <code
-            class="flex-1 overflow-x-auto whitespace-nowrap font-mono text-sm text-[color:var(--color-fg)]"
+            class="min-w-0 flex-1 break-all font-mono text-xs text-[color:var(--color-fg)] sm:text-sm"
           >curl -fsSL https://brittle.dev/install.sh | sh</code>
           <button
             type="button"

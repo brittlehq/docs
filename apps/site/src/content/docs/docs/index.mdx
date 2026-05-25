@@ -3,11 +3,16 @@ title: Introduction
 description: What Brittle is, what it isn't, and whether you should keep reading.
 ---
 
-Brittle is a self-hosted dashboard for test results. You install one
-Docker container, point your test reporter at it, and your CI runs
-start arriving as something you can actually read. Runs grouped by
-branch and commit. Failures clustered by file. Flake history per test.
-The video, trace, and logs from each session one click away.
+Brittle is an end-to-end test observability platform. You install
+one Docker container, point your test reporter at it, and the
+signals about your test suite start arriving on a dashboard you can
+actually read. Per-env health. Run-over-run regressions. Strong
+flakes. Failure clusters. Full session replay one click away.
+
+Test health is a leading indicator of product health. A checkout-flow
+test that's been quietly degrading for three weeks across four
+browsers is the product breaking, not the test. Brittle is the
+dashboard for both.
 
 If your CI runs Playwright, WebdriverIO, Jest, or Vitest and you've
 ever re-run a failing test just to see it pass, this is built for that
