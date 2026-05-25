@@ -18,7 +18,7 @@ const rows = [
   {
     kicker: 'ai failure prediction',
     title: 'Know which failure is the flake before you rerun.',
-    body: 'Each failure gets a flake-likelihood score from prior history, per-env signals and stack-trace similarity — so the rerun list is already prioritised.',
+    body: 'Each failure gets a flake-likelihood score from prior history, per-env signals, and stack-trace similarity, so the rerun list is already prioritised.',
     mockUrl: 'brittle.dev/p/web/runs/rh-9j2',
     mockKey: 'failure',
     mockOn: 'left',
@@ -68,7 +68,7 @@ const rows = [
       {rows.map((row, i) => (
         <div
           class:list={[
-            'grid items-center gap-10 md:grid-cols-2 md:gap-16',
+            'grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16',
           ]}
         >
           {/* Mock pane */}
